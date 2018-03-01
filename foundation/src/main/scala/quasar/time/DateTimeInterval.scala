@@ -174,4 +174,26 @@ object DateTimeInterval {
 
   def ofNanos(nanos: Long): DateTimeInterval =
     DateTimeInterval(Period.ZERO, Duration.ofNanos(nanos))
+
+  def betweenLocalDateTime(d1: LocalDateTime, d2: LocalDateTime): DateTimeInterval =
+    DateTimeInterval(
+      Period.between(d1.toLocalDate, d2.toLocalDate),
+      Duration.between(d1.toLocalTime, d2.toLocalTime))
+
+  def betweenLocalDate(d1: LocalDate, d2: LocalDate): DateTimeInterval =
+    DateTimeInterval(Period.between(d1, d2), Duration.ZERO)
+
+  def betweenLocalTime(d1: LocalTime, d2: LocalTime): DateTimeInterval =
+    DateTimeInterval(Period.ZERO, Duration.between(d1, d2))
+
+  def betweenOffsetDateTime(d1: OffsetDateTime, d2: OffsetDateTime): DateTimeInterval =
+    DateTimeInterval(
+      Period.between(d1.toLocalDate, d2.toLocalDate),
+      Duration.between(d1.toOffsetTime, d2.toOffsetTime))
+
+  def betweenOffsetDate(d1: OffsetDate, d2: OffsetDate): DateTimeInterval =
+    d1.between(d2)
+
+  def betweenOffsetTime(d1: OffsetTime, d2: OffsetTime): DateTimeInterval =
+    DateTimeInterval(Period.ZERO, Duration.between(d1, d2))
 }
