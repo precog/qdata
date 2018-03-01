@@ -30,6 +30,8 @@ import java.time.{
 }
 import java.time.temporal.ChronoField
 
+import scala.math
+
 trait DateGenerators {
 
   implicit val arbDateTimeInterval: Arbitrary[DateTimeInterval] = genInterval
@@ -86,6 +88,9 @@ trait DateGenerators {
   def genInterval: Gen[DateTimeInterval] =
     Gen.oneOf(genDateTimeInterval, genTimeInterval, genDateInterval)
 
+  // FIXME
+  // only generate positive seconds until this is available (Java 9)
+  // https://bugs.openjdk.java.net/browse/JDK-8054978
   def genDateTimeInterval: Gen[DateTimeInterval] =
     for {
       years <- genYears
@@ -93,7 +98,7 @@ trait DateGenerators {
       days <- genDays
       seconds <- genSeconds
       nanos <- genNanos
-    } yield DateTimeInterval.make(years, months, days, seconds.toLong, nanos)
+    } yield DateTimeInterval.make(years, months, days, math.abs(seconds.toLong), math.abs(nanos))
 
   def genDateInterval: Gen[DateTimeInterval] =
     for {
@@ -102,11 +107,14 @@ trait DateGenerators {
       days <- genDays
     } yield DateTimeInterval.make(years, months, days, 0, 0)
 
+  // FIXME
+  // only generate positive seconds until this is available (Java 9)
+  // https://bugs.openjdk.java.net/browse/JDK-8054978
   def genTimeInterval: Gen[DateTimeInterval] =
     for {
       seconds <- genSeconds
       nanos <- genNanos
-    } yield DateTimeInterval.make(0, 0, 0, seconds.toLong, nanos)
+    } yield DateTimeInterval.make(0, 0, 0, math.abs(seconds.toLong), math.abs(nanos))
 
   def genLocalDateTime: Gen[JLocalDateTime] =
     for {
