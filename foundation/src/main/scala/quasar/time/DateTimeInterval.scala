@@ -31,7 +31,7 @@ import java.time.{
 import scalaz.\/
 import scalaz.Scalaz._
 
-// TODO is this true?
+// TODO is this true? (add roundtrip tests)
 // note that `parse <-> toString` is not an isomorphism, because the first minus sign
 // is absorbed into the rest of the units in the interval,
 // and nanos in excess of a second are added into seconds
@@ -42,6 +42,8 @@ import scalaz.Scalaz._
 
 final case class DateTimeInterval(period: Period, duration: Duration) {
 
+  // TODO handle toString for a negative period and/or a negative duration
+  // java.time supports negative intervals but ISO8601 doesn't
   override def toString: String =
     if (duration.isZero) {
       period.toString
