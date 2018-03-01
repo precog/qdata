@@ -19,7 +19,7 @@ package quasar.time
 import slamdata.Predef.{SuppressWarnings, _}
 import java.time.format.DateTimeFormatter
 import java.time.temporal._
-import java.time.{LocalDate, Period, ZoneOffset}
+import java.time.{Duration, LocalDate, Period, ZoneOffset}
 
 import scalaz.std.anyVal._
 import scalaz.syntax.equal._
@@ -31,6 +31,11 @@ final case class OffsetDate(date: LocalDate, offset: ZoneOffset) extends Tempora
     if (dateCompare === 0) offset.compareTo(other.offset)
     else dateCompare
   }
+
+  def between(other: OffsetDate): DateTimeInterval =
+    DateTimeInterval(
+      Period.between(date, other.date),
+      Duration.ofSeconds(offset.getTotalSeconds.toLong - other.offset.getTotalSeconds.toLong))
 
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   override def equals(obj: scala.Any): Boolean = obj match {
