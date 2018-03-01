@@ -93,20 +93,20 @@ trait DateGenerators {
       days <- genDays
       seconds <- genSeconds
       nanos <- genNanos
-    } yield DateTimeInterval(years, months, days, seconds.toLong, nanos)
+    } yield DateTimeInterval.make(years, months, days, seconds.toLong, nanos)
 
   def genDateInterval: Gen[DateTimeInterval] =
     for {
       years <- genYears
       months <- genMonths
       days <- genDays
-    } yield DateTimeInterval(years, months, days, 0, 0)
+    } yield DateTimeInterval.make(years, months, days, 0, 0)
 
   def genTimeInterval: Gen[DateTimeInterval] =
     for {
       seconds <- genSeconds
       nanos <- genNanos
-    } yield DateTimeInterval(0, 0, 0, seconds.toLong, nanos)
+    } yield DateTimeInterval.make(0, 0, 0, seconds.toLong, nanos)
 
   def genLocalDateTime: Gen[JLocalDateTime] =
     for {
