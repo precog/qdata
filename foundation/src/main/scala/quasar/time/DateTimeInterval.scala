@@ -41,6 +41,7 @@ import scalaz.Scalaz._
 // LocalDate.of(1, 1, 31).plusMonths(1).plusMonths(1) == LocalDate.of(1, 3, 28)
 
 // TODO add tests for between functions
+// TODO add tests for plus, minus, multiply
 final case class DateTimeInterval(period: Period, duration: Duration) {
 
   // TODO handle toString for a negative period and/or a negative duration
