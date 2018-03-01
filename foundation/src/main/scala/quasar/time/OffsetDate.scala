@@ -37,13 +37,6 @@ final case class OffsetDate(date: LocalDate, offset: ZoneOffset) extends Tempora
       Period.between(date, other.date),
       Duration.ofSeconds(offset.getTotalSeconds.toLong - other.offset.getTotalSeconds.toLong))
 
-  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
-  override def equals(obj: scala.Any): Boolean = obj match {
-    case other: OffsetDate =>
-      date == other.date && offset == other.offset
-    case _ => false
-  }
-
   override def toString(): String = {
     DateTimeFormatter.ISO_OFFSET_DATE.format(this)
   }
