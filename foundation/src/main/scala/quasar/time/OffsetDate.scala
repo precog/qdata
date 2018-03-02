@@ -19,7 +19,7 @@ package quasar.time
 import slamdata.Predef.{SuppressWarnings, _}
 import java.time.format.DateTimeFormatter
 import java.time.temporal._
-import java.time.{Duration, LocalDate, Period, ZoneOffset}
+import java.time.{LocalDate, Period, ZoneOffset}
 
 import scalaz.std.anyVal._
 import scalaz.syntax.equal._
@@ -28,38 +28,38 @@ import scalaz.syntax.equal._
 final case class OffsetDate(date: LocalDate, offset: ZoneOffset) extends TemporalAccessor {
   def compareTo(other: OffsetDate): Int = {
     val dateCompare = date.compareTo(other.date)
-    if (dateCompare === 0) offset.compareTo(other.offset)
-    else dateCompare
+
+    if (dateCompare === 0)
+      offset.compareTo(other.offset)
+    else
+      dateCompare
   }
 
-  def between(other: OffsetDate): DateTimeInterval =
-    DateTimeInterval(
-      Period.between(date, other.date),
-      Duration.ofSeconds(offset.getTotalSeconds.toLong - other.offset.getTotalSeconds.toLong))
-
-  override def toString(): String = {
+  override def toString(): String =
     DateTimeFormatter.ISO_OFFSET_DATE.format(this)
-  }
 
-  def plus(per: Period): OffsetDate = OffsetDate(date.plus(per), offset)
-  def minus(per: Period): OffsetDate = OffsetDate(date.minus(per), offset)
+  def plus(period: Period): OffsetDate =
+    OffsetDate(date.plus(period), offset)
+
+  def minus(period: Period): OffsetDate =
+    OffsetDate(date.minus(period), offset)
 
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))
-  override def isSupported(field: TemporalField) = {
+  override def isSupported(field: TemporalField) =
     (field eq ChronoField.OFFSET_SECONDS) || date.isSupported(field)
-  }
 
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   override def getLong(field: TemporalField) = {
-    if (field eq ChronoField.OFFSET_SECONDS) offset.getTotalSeconds.toLong
-    else date.getLong(field)
+    if (field eq ChronoField.OFFSET_SECONDS)
+      offset.getTotalSeconds.toLong
+    else
+      date.getLong(field)
   }
 }
 
 object OffsetDate {
-  def parse(str: String) = {
+  def parse(str: String) =
     DateTimeFormatter.ISO_OFFSET_DATE.parse(str, query)
-  }
 
   val query: TemporalQuery[OffsetDate] = new TemporalQuery[OffsetDate] {
     override def queryFrom(temporal: TemporalAccessor): OffsetDate = {
