@@ -40,7 +40,6 @@ import scalaz.Scalaz._
 // LocalDate.of(1, 1, 31).plusMonths(2) == LocalDate.of(1, 3, 31)
 // LocalDate.of(1, 1, 31).plusMonths(1).plusMonths(1) == LocalDate.of(1, 3, 28)
 
-// TODO add tests for between functions
 // TODO add tests for plus, minus, multiply
 final case class DateTimeInterval(period: Period, duration: Duration) {
 
@@ -75,13 +74,13 @@ final case class DateTimeInterval(period: Period, duration: Duration) {
     dt.minus(duration)
 
   def subtractFromOffsetDateTime(odt: OffsetDateTime): OffsetDateTime =
-    OffsetDateTime.of(subtractFromLocalDateTime(odt.toLocalDateTime), odt.getOffset)
+    odt.minus(period).minus(duration)
 
   def subtractFromOffsetDate(odt: OffsetDate): OffsetDate =
-    OffsetDate(subtractFromLocalDate(odt.date), odt.offset)
+    odt.minus(period)
 
   def subtractFromOffsetTime(odt: OffsetTime): OffsetTime =
-    OffsetTime.of(subtractFromLocalTime(odt.toLocalTime), odt.getOffset)
+    odt.minus(duration)
 
   def addToLocalDateTime(dt: LocalDateTime): LocalDateTime =
     dt.plus(period).plus(duration)
@@ -93,13 +92,13 @@ final case class DateTimeInterval(period: Period, duration: Duration) {
     dt.plus(duration)
 
   def addToOffsetDateTime(odt: OffsetDateTime): OffsetDateTime =
-    OffsetDateTime.of(addToLocalDateTime(odt.toLocalDateTime), odt.getOffset)
+    odt.plus(period).plus(duration)
 
   def addToOffsetDate(odt: OffsetDate): OffsetDate =
-    OffsetDate(addToLocalDate(odt.date), odt.offset)
+    odt.plus(period)
 
   def addToOffsetTime(odt: OffsetTime): OffsetTime =
-    OffsetTime.of(addToLocalTime(odt.toLocalTime), odt.getOffset)
+    odt.plus(duration)
 
   def isDateLike: Boolean = duration.isZero
   def isTimeLike: Boolean = period.isZero
@@ -194,7 +193,7 @@ object DateTimeInterval {
       Duration.between(d1.toOffsetTime, d2.toOffsetTime))
 
   def betweenOffsetDate(d1: OffsetDate, d2: OffsetDate): DateTimeInterval =
-    d1.between(d2)
+    DateTimeInterval(Period.between(d1.date, d2.date), Duration.ZERO)
 
   def betweenOffsetTime(d1: OffsetTime, d2: OffsetTime): DateTimeInterval =
     DateTimeInterval(Period.ZERO, Duration.between(d1, d2))
