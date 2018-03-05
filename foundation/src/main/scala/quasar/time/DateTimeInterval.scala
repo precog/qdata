@@ -66,38 +66,14 @@ final case class DateTimeInterval(period: Period, duration: Duration) {
   def subtractFromLocalDateTime(dt: LocalDateTime): LocalDateTime =
     dt.minus(period).minus(duration)
 
-  def subtractFromLocalDate(dt: LocalDate): LocalDate =
-    dt.minus(period)
-
-  def subtractFromLocalTime(dt: LocalTime): LocalTime =
-    dt.minus(duration)
-
   def subtractFromOffsetDateTime(odt: OffsetDateTime): OffsetDateTime =
     odt.minus(period).minus(duration)
-
-  def subtractFromOffsetDate(odt: OffsetDate): OffsetDate =
-    odt.minus(period)
-
-  def subtractFromOffsetTime(odt: OffsetTime): OffsetTime =
-    odt.minus(duration)
 
   def addToLocalDateTime(dt: LocalDateTime): LocalDateTime =
     dt.plus(period).plus(duration)
 
-  def addToLocalDate(dt: LocalDate): LocalDate =
-    dt.plus(period)
-
-  def addToLocalTime(dt: LocalTime): LocalTime =
-    dt.plus(duration)
-
   def addToOffsetDateTime(odt: OffsetDateTime): OffsetDateTime =
     odt.plus(period).plus(duration)
-
-  def addToOffsetDate(odt: OffsetDate): OffsetDate =
-    odt.plus(period)
-
-  def addToOffsetTime(odt: OffsetTime): OffsetTime =
-    odt.plus(duration)
 
   def isDateLike: Boolean = duration.isZero
   def isTimeLike: Boolean = period.isZero
@@ -121,9 +97,9 @@ object DateTimeInterval {
 
     (periodParsed, durationParsed) match {
       case (Some(p), Some(d)) => DateTimeInterval(p, d).some
-      case (Some(p), None) if d.isEmpty => DateTimeInterval(p, Duration.ZERO).some
+      case (Some(p), None) if d.isEmpty => DateTimeInterval.ofPeriod(p).some
       case (None, Some(d)) if p.toString === "P" || p.toString === "-P" =>
-        DateTimeInterval(Period.ZERO, d).some
+        DateTimeInterval.ofDuration(d).some
       case (_, _) => None
     }
   }
@@ -145,55 +121,85 @@ object DateTimeInterval {
   def make(years: Int, months: Int, days: Int, seconds: Long, nanos: Long): DateTimeInterval =
     DateTimeInterval(Period.of(years, months, days), Duration.ofSeconds(seconds, nanos))
 
+  def ofPeriod(period: Period) =
+    DateTimeInterval(period, Duration.ZERO)
+
+  def ofDuration(duration: Duration) =
+    DateTimeInterval(Period.ZERO, duration)
+
   def ofYears(years: Int): DateTimeInterval =
-    DateTimeInterval(Period.ofYears(years), Duration.ZERO)
+    DateTimeInterval.ofPeriod(Period.ofYears(years))
 
   def ofMonths(months: Int): DateTimeInterval =
-    DateTimeInterval(Period.ofMonths(months), Duration.ZERO)
+    DateTimeInterval.ofPeriod(Period.ofMonths(months))
 
   def ofWeeks(weeks: Int): DateTimeInterval =
-    DateTimeInterval(Period.ofWeeks(weeks), Duration.ZERO)
+    DateTimeInterval.ofPeriod(Period.ofWeeks(weeks))
 
   def ofDays(days: Int): DateTimeInterval =
-    DateTimeInterval(Period.ofDays(days), Duration.ZERO)
+    DateTimeInterval.ofPeriod(Period.ofDays(days))
 
   def ofHours(hours: Long): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.ofHours(hours))
+    DateTimeInterval.ofDuration(Duration.ofHours(hours))
 
   def ofMinutes(minutes: Long): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.ofMinutes(minutes))
+    DateTimeInterval.ofDuration(Duration.ofMinutes(minutes))
 
   def ofSeconds(seconds: Long): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.ofSeconds(seconds))
+    DateTimeInterval.ofDuration(Duration.ofSeconds(seconds))
 
   def ofSecondsNanos(seconds: Long, nanos: Long): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.ofSeconds(seconds, nanos))
+    DateTimeInterval.ofDuration(Duration.ofSeconds(seconds, nanos))
 
   def ofMillis(millis: Long): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.ofMillis(millis))
+    DateTimeInterval.ofDuration(Duration.ofMillis(millis))
 
   def ofNanos(nanos: Long): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.ofNanos(nanos))
+    DateTimeInterval.ofDuration(Duration.ofNanos(nanos))
 
   def betweenLocalDateTime(d1: LocalDateTime, d2: LocalDateTime): DateTimeInterval =
     DateTimeInterval(
       Period.between(d1.toLocalDate, d2.toLocalDate),
       Duration.between(d1.toLocalTime, d2.toLocalTime))
 
-  def betweenLocalDate(d1: LocalDate, d2: LocalDate): DateTimeInterval =
-    DateTimeInterval(Period.between(d1, d2), Duration.ZERO)
+  def betweenLocalDate(d1: LocalDate, d2: LocalDate): Period =
+    Period.between(d1, d2)
 
-  def betweenLocalTime(d1: LocalTime, d2: LocalTime): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.between(d1, d2))
+  def betweenLocalTime(d1: LocalTime, d2: LocalTime): Duration =
+    Duration.between(d1, d2)
 
   def betweenOffsetDateTime(d1: OffsetDateTime, d2: OffsetDateTime): DateTimeInterval =
     DateTimeInterval(
       Period.between(d1.toLocalDate, d2.toLocalDate),
       Duration.between(d1.toOffsetTime, d2.toOffsetTime))
 
-  def betweenOffsetDate(d1: OffsetDate, d2: OffsetDate): DateTimeInterval =
-    DateTimeInterval(Period.between(d1.date, d2.date), Duration.ZERO)
+  def betweenOffsetDate(d1: OffsetDate, d2: OffsetDate): Period =
+    Period.between(d1.date, d2.date)
 
-  def betweenOffsetTime(d1: OffsetTime, d2: OffsetTime): DateTimeInterval =
-    DateTimeInterval(Period.ZERO, Duration.between(d1, d2))
+  def betweenOffsetTime(d1: OffsetTime, d2: OffsetTime): Duration =
+    Duration.between(d1, d2)
+
+  def subtractFromLocalDate(dt: LocalDate, period: Period): LocalDate =
+    dt.minus(period)
+
+  def subtractFromLocalTime(dt: LocalTime, duration: Duration): LocalTime =
+    dt.minus(duration)
+
+  def subtractFromOffsetDate(odt: OffsetDate, period: Period): OffsetDate =
+    odt.minus(period)
+
+  def subtractFromOffsetTime(odt: OffsetTime, duration: Duration): OffsetTime =
+    odt.minus(duration)
+
+  def addToLocalDate(dt: LocalDate, period: Period): LocalDate =
+    dt.plus(period)
+
+  def addToLocalTime(dt: LocalTime, duration: Duration): LocalTime =
+    dt.plus(duration)
+
+  def addToOffsetDate(odt: OffsetDate, period: Period): OffsetDate =
+    odt.plus(period)
+
+  def addToOffsetTime(odt: OffsetTime, duration: Duration): OffsetTime =
+    odt.plus(duration)
 }
