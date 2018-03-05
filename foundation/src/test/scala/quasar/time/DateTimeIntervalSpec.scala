@@ -242,22 +242,22 @@ class DateTimeIntervalSpec extends quasar.Qspec {
       val diff1 = DateTimeInterval.betweenLocalDate(d1, d2)
       val diff2 = DateTimeInterval.betweenLocalDate(d2, d1)
 
-      diff1.addToLocalDate(d1) must_== d2
-      diff1.subtractFromLocalDate(d2) must_== d1
+      DateTimeInterval.addToLocalDate(d1, diff1) must_== d2
+      DateTimeInterval.subtractFromLocalDate(d2, diff1) must_== d1
 
-      diff2.addToLocalDate(d2) must_== d1
-      diff2.subtractFromLocalDate(d1) must_== d2
+      DateTimeInterval.addToLocalDate(d2, diff2) must_== d1
+      DateTimeInterval.subtractFromLocalDate(d1, diff2) must_== d2
     }
 
     "compute difference between two LocalTime" >> {
       val diff1 = DateTimeInterval.betweenLocalTime(t1, t2)
       val diff2 = DateTimeInterval.betweenLocalTime(t2, t1)
 
-      diff1.addToLocalTime(t1) must_== t2
-      diff1.subtractFromLocalTime(t2) must_== t1
+      DateTimeInterval.addToLocalTime(t1, diff1) must_== t2
+      DateTimeInterval.subtractFromLocalTime(t2, diff1) must_== t1
 
-      diff2.addToLocalTime(t2) must_== t1
-      diff2.subtractFromLocalTime(t1) must_== t2
+      DateTimeInterval.addToLocalTime(t2, diff2) must_== t1
+      DateTimeInterval.subtractFromLocalTime(t1, diff2) must_== t2
     }
 
     "compute difference between two LocalDateTime" >> {
@@ -275,22 +275,22 @@ class DateTimeIntervalSpec extends quasar.Qspec {
       val diff1 = DateTimeInterval.betweenOffsetDate(od1, od2)
       val diff2 = DateTimeInterval.betweenOffsetDate(od2, od1)
 
-      diff1.addToOffsetDate(od1) must equalOffsetDate(od2)
-      diff1.subtractFromOffsetDate(od2) must equalOffsetDate(od1)
+      DateTimeInterval.addToOffsetDate(od1, diff1) must equalOffsetDate(od2)
+      DateTimeInterval.subtractFromOffsetDate(od2, diff1) must equalOffsetDate(od1)
 
-      diff2.addToOffsetDate(od2) must equalOffsetDate(od1)
-      diff2.subtractFromOffsetDate(od1) must equalOffsetDate(od2)
+      DateTimeInterval.addToOffsetDate(od2, diff2) must equalOffsetDate(od1)
+      DateTimeInterval.subtractFromOffsetDate(od1, diff2) must equalOffsetDate(od2)
     }
 
     "compute difference between two OffsetTime" >> {
       val diff1 = DateTimeInterval.betweenOffsetTime(ot1, ot2)
       val diff2 = DateTimeInterval.betweenOffsetTime(ot2, ot1)
 
-      diff1.addToOffsetTime(ot1) must equalOffsetTime(ot2)
-      diff1.subtractFromOffsetTime(ot2) must equalOffsetTime(ot1)
+      DateTimeInterval.addToOffsetTime(ot1, diff1) must equalOffsetTime(ot2)
+      DateTimeInterval.subtractFromOffsetTime(ot2, diff1) must equalOffsetTime(ot1)
 
-      diff2.addToOffsetTime(ot2) must equalOffsetTime(ot1)
-      diff2.subtractFromOffsetTime(ot1) must equalOffsetTime(ot2)
+      DateTimeInterval.addToOffsetTime(ot2, diff2) must equalOffsetTime(ot1)
+      DateTimeInterval.subtractFromOffsetTime(ot1, diff2) must equalOffsetTime(ot2)
     }
 
     "compute difference between two OffsetDateTime" >> {
