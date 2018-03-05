@@ -92,44 +92,100 @@ class DateTimeIntervalSpec extends quasar.Qspec {
 
   "toString" should {
     "empty" in {
-      DateTimeInterval.make(0, 0, 0, 0L, 0).toString shouldEqual "P0D"
+      val expected = "P0D"
+
+      DateTimeInterval.make(0, 0, 0, 0L, 0).toString shouldEqual expected
+      DateTimeInterval.zero.toString shouldEqual expected
     }
 
     "one year" in {
-      DateTimeInterval.make(1, 0, 0, 0L, 0).toString shouldEqual "P1Y"
+      val expected = "P1Y"
+
+      DateTimeInterval.make(1, 0, 0, 0L, 0).toString shouldEqual expected
+      DateTimeInterval.ofPeriod(Period.ofYears(1)).toString shouldEqual expected
     }
 
     "one month" in {
-      DateTimeInterval.make(0, 1, 0, 0L, 0).toString shouldEqual "P1M"
+      val expected = "P1M"
+
+      DateTimeInterval.make(0, 1, 0, 0L, 0).toString shouldEqual expected
+      DateTimeInterval.ofPeriod(Period.ofMonths(1)).toString shouldEqual expected
     }
 
     "one day" in {
-      DateTimeInterval.make(0, 0, 1, 0L, 0).toString shouldEqual "P1D"
+      val expected = "P1D"
+
+      DateTimeInterval.make(0, 0, 1, 0L, 0).toString shouldEqual expected
+      DateTimeInterval.ofPeriod(Period.ofDays(1)).toString shouldEqual expected
     }
 
     "one hour" in {
-      DateTimeInterval.make(0, 0, 0, 3600L, 0).toString shouldEqual "PT1H"
+      val expected = "PT1H"
+
+      DateTimeInterval.make(0, 0, 0, 3600L, 0).toString shouldEqual expected
+      DateTimeInterval.ofDuration(Duration.ofSeconds(3600L)).toString shouldEqual expected
     }
 
     "one minute" in {
-      DateTimeInterval.make(0, 0, 0, 60L, 0).toString shouldEqual "PT1M"
+      val expected = "PT1M"
+
+      DateTimeInterval.make(0, 0, 0, 60L, 0).toString shouldEqual expected
+      DateTimeInterval.ofDuration(Duration.ofSeconds(60L)).toString shouldEqual expected
     }
 
     "one second" in {
-      DateTimeInterval.make(0, 0, 0, 1L, 0).toString shouldEqual "PT1S"
+      val expected = "PT1S"
+
+      DateTimeInterval.make(0, 0, 0, 1L, 0).toString shouldEqual expected
+      DateTimeInterval.ofDuration(Duration.ofSeconds(1L)).toString shouldEqual expected
     }
 
     "one tenth second" in {
-      DateTimeInterval.make(0, 0, 0, 0L, 100000000).toString shouldEqual "PT0.1S"
+      val expected = "PT0.1S"
+
+      DateTimeInterval.make(0, 0, 0, 0L, 100000000).toString shouldEqual expected
+      DateTimeInterval.ofDuration(Duration.ofNanos(100000000)).toString shouldEqual expected
     }
 
     "all components" in {
-      DateTimeInterval.make(1, 1, 1, 3661L, 100000000).toString shouldEqual "P1Y1M1DT1H1M1.1S"
+      val expected = "P1Y1M1DT1H1M1.1S"
+
+      DateTimeInterval.make(1, 1, 1, 3661L, 100000000).toString shouldEqual expected
+      DateTimeInterval(Period.of(1, 1, 1), Duration.ofSeconds(3661L, 100000000)).toString shouldEqual expected
     }
 
     "negative nanos" in {
-      Duration.ofSeconds(1, -100000000).toString shouldEqual "PT0.9S"
-      DateTimeInterval.make(0, 0, 0, 1L, -100000000).toString shouldEqual "PT0.9S"
+      val duration = Duration.ofSeconds(1, -100000000)
+      val expected = "PT0.9S"
+
+      duration.toString shouldEqual expected
+
+      DateTimeInterval.make(0, 0, 0, 1L, -100000000).toString shouldEqual expected
+      DateTimeInterval.ofDuration(duration).toString shouldEqual expected
+    }
+
+    "negative period" in {
+      DateTimeInterval.ofPeriod(Period.of(-3, -4, -5)).toString shouldEqual "P-3Y-4M-5D"
+    }
+
+    "partially negative period" in {
+      DateTimeInterval.ofPeriod(Period.of(-3, 4, -5)).toString shouldEqual "P-3Y4M-5D"
+    }
+
+    "negative duration" in {
+      DateTimeInterval.ofDuration(Duration.ofSeconds(-32, -8492)).toString shouldEqual "PT-32.000008492S"
+    }
+
+    "negative period and negative duration" in {
+      DateTimeInterval(
+        Period.of(-3, 4, 5),
+        Duration.ofSeconds(-32, -8492)).toString shouldEqual "P-3Y4M5DT-32.000008492S"
+    }
+
+    "positive period and negative duration" in {
+      DateTimeInterval(
+        Period.of(3, 4, 5),
+        Duration.ofSeconds(-32, -8492)).toString shouldEqual "P3Y4M5DT-32.000008492S"
     }
   }
 
