@@ -20,12 +20,14 @@ import slamdata.Predef._
 import quasar.pkg.tests._
 
 import java.time.{
+  Duration,
   Instant,
   LocalDate => JLocalDate,
   LocalDateTime => JLocalDateTime,
   LocalTime => JLocalTime,
   OffsetDateTime => JOffsetDateTime,
   OffsetTime => JOffsetTime,
+  Period,
   ZoneOffset
 }
 import java.time.temporal.ChronoField
@@ -34,15 +36,21 @@ import scala.math
 
 trait DateGenerators {
 
+  implicit val arbDuration: Arbitrary[Duration] = genDuration
+  implicit val arbPeriod: Arbitrary[Period] = genPeriod
   implicit val arbDateTimeInterval: Arbitrary[DateTimeInterval] = genInterval
+
   implicit val arbInstant: Arbitrary[Instant] =
     Arbitrary((genEpochSeconds, genNanos) >> Instant.ofEpochSecond _)
+
   implicit val arbLocalDate: Arbitrary[JLocalDate] = genLocalDate
   implicit val arbLocalTime: Arbitrary[JLocalTime] = genLocalTime
   implicit val arbLocalDateTime: Arbitrary[JLocalDateTime] = genLocalDateTime
+
   implicit val arbOffsetDate: Arbitrary[OffsetDate] = genOffsetDate
   implicit val arbOffsetTime: Arbitrary[JOffsetTime] = genOffsetTime
   implicit val arbOffsetDateTime: Arbitrary[JOffsetDateTime] = genOffsetDateTime
+
   implicit val arbZoneOffset: Arbitrary[ZoneOffset] = genZoneOffset
   implicit val arbTemporalPart: Arbitrary[TemporalPart] = genTemporalPart
 
@@ -100,21 +108,27 @@ trait DateGenerators {
       nanos <- genNanos
     } yield DateTimeInterval.make(years, months, days, math.abs(seconds.toLong), math.abs(nanos))
 
-  def genDateInterval: Gen[DateTimeInterval] =
+  def genPeriod: Gen[Period] =
     for {
       years <- genYears
       months <- genMonths
       days <- genDays
-    } yield DateTimeInterval.make(years, months, days, 0, 0)
+    } yield Period.of(years, months, days)
+
+  def genDateInterval: Gen[DateTimeInterval] =
+    genPeriod.map(DateTimeInterval.ofPeriod)
 
   // FIXME
   // only generate positive seconds until this is available (Java 9)
   // https://bugs.openjdk.java.net/browse/JDK-8054978
-  def genTimeInterval: Gen[DateTimeInterval] =
+  def genDuration: Gen[Duration] =
     for {
       seconds <- genSeconds
       nanos <- genNanos
-    } yield DateTimeInterval.make(0, 0, 0, math.abs(seconds.toLong), math.abs(nanos))
+    } yield Duration.ofSeconds(math.abs(seconds.toLong), math.abs(nanos))
+
+  def genTimeInterval: Gen[DateTimeInterval] =
+    genDuration.map(DateTimeInterval.ofDuration)
 
   def genLocalDateTime: Gen[JLocalDateTime] =
     for {
