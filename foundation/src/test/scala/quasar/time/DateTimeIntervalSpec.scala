@@ -17,6 +17,7 @@
 package quasar.time
 
 import slamdata.Predef._
+import quasar.time.DateGenerators._
 
 import java.time._
 
@@ -175,6 +176,43 @@ class DateTimeIntervalSpec extends quasar.Qspec {
 
     "negative nanos" in {
       DateTimeInterval.ofNanos(-1L) shouldEqual DateTimeInterval.make(0, 0, 0, -1L, 999999999L)
+    }
+  }
+
+  "multiply" >> {
+    "simple" >> {
+      DateTimeInterval.make(2, 2, 2, 2, 2).multiply(7) must_==
+        DateTimeInterval.make(14, 14, 14, 14, 14)
+    }
+
+    "zero" >> prop { (factor: Int) =>
+      DateTimeInterval.zero.multiply(factor) must_== DateTimeInterval.zero
+    }
+  }
+
+  "plus/minus" >> {
+    "simple plus" >> {
+      DateTimeInterval.make(2, 2, 2, 2, 2).plus(DateTimeInterval.make(5, 5, 5, 5, 5)) must_==
+        DateTimeInterval.make(7, 7, 7, 7, 7)
+    }
+
+    "simple minus" >> {
+      DateTimeInterval.make(2, 2, 2, 2, 2).minus(DateTimeInterval.make(5, 5, 5, 5, 5)) must_==
+        DateTimeInterval.make(-3, -3, -3, -3, -3)
+    }
+
+    "any" >> prop { (i1: DateTimeInterval, i2: DateTimeInterval) =>
+      i1.plus(i2).minus(i2) must_== i1
+      i1.minus(i2).plus(i2) must_== i1
+    }
+
+    "associativity" >> prop { (i1: DateTimeInterval, i2: DateTimeInterval, i3: DateTimeInterval) =>
+      i1.plus(i2).plus(i3) must_== i2.plus(i3).plus(i1)
+    }
+
+    "zero" >> prop { (i1: DateTimeInterval) =>
+      DateTimeInterval.zero.plus(i1) must_== i1
+      i1.minus(DateTimeInterval.zero) must_== i1
     }
   }
 
