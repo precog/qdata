@@ -154,6 +154,12 @@ class DateTimeIntervalSpec extends quasar.Qspec {
       DateTimeInterval(Period.of(1, 1, 1), Duration.ofSeconds(3661L, 100000000)).toString shouldEqual expected
     }
 
+    "normalize" in {
+      val expected = "P1Y14M400DT24H2.000000001S"
+      DateTimeInterval.make(1, 14, 400, (24 * 60 * 60) + 1, 1000000001).toString shouldEqual expected
+      DateTimeInterval(Period.of(1, 14, 400), Duration.ofSeconds((24 * 60 * 60) + 1, 1000000001)).toString shouldEqual expected
+    }
+
     "negative nanos" in {
       val duration = Duration.ofSeconds(1, -100000000)
       val expected = "PT0.9S"
@@ -241,6 +247,11 @@ class DateTimeIntervalSpec extends quasar.Qspec {
         DateTimeInterval.make(14, 14, 14, 14, 14)
     }
 
+    "overflow" >> {
+      DateTimeInterval.make(128, 8, 17, (24 * 60 * 60) - 1, 999999999).multiply(2) must_==
+        DateTimeInterval.make(256, 16, 34, (24 * 60 * 60 * 2) - 1, 999999998)
+    }
+
     "zero" >> prop { (factor: Int) =>
       DateTimeInterval.zero.multiply(factor) must_== DateTimeInterval.zero
     }
@@ -250,6 +261,11 @@ class DateTimeIntervalSpec extends quasar.Qspec {
     "simple plus" >> {
       DateTimeInterval.make(2, 2, 2, 2, 2).plus(DateTimeInterval.make(5, 5, 5, 5, 5)) must_==
         DateTimeInterval.make(7, 7, 7, 7, 7)
+    }
+
+    "plus overflow" >> {
+      DateTimeInterval.make(2, 12, 31, (24 * 60 * 60) - 1, 999999999).plus(DateTimeInterval.make(2, 2, 2, 2, 2)) must_==
+        DateTimeInterval.make(4, 14, 33, (24 * 60 * 60) + 2, 1)
     }
 
     "simple minus" >> {
