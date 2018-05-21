@@ -18,22 +18,25 @@ package quasar.qdata
 
 sealed trait QType
 
-final case object QLong extends QType
-final case object QDouble extends QType
-final case object QReal extends QType
+object QType {
 
-final case object QBytes extends QType
-final case object QString extends QType
-final case object QNull extends QType
-final case object QBoolean extends QType
+  final case object QLong extends QType
+  final case object QDouble extends QType
+  final case object QReal extends QType
 
-final case object QLocalDateTime extends QType
-final case object QLocalDate extends QType
-final case object QLocalTime extends QType
-final case object QOffsetDateTime extends QType
-final case object QOffsetDate extends QType
-final case object QOffsetTime extends QType
-final case object QInterval extends QType
+  final case object QBytes extends QType
+  final case object QString extends QType
+  final case object QNull extends QType
+  final case object QBoolean extends QType
 
-final case object QArray extends QType
-final case object QObject extends QType
+  final case object QLocalDateTime extends QType
+  final case object QLocalDate extends QType
+  final case object QLocalTime extends QType
+  final case object QOffsetDateTime extends QType
+  final case object QOffsetDate extends QType
+  final case object QOffsetTime extends QType
+  final case object QInterval extends QType
+
+  final case object QArray extends QType
+  final case object QObject extends QType
+}
