@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package quasar.time
+package qdata.time
 
 import slamdata.Predef._
 

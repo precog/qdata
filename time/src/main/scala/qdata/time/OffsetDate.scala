@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package quasar.time
+package qdata.time
 
-import slamdata.Predef.{SuppressWarnings, _}
+import slamdata.Predef._
+
 import java.time.format.DateTimeFormatter
 import java.time.temporal._
 import java.time.{LocalDate, Period, ZoneOffset}

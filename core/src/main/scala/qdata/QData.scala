@@ -18,7 +18,7 @@ package qdata
 
 import slamdata.Predef._
 
-import quasar.time.{DateTimeInterval, OffsetDate}
+import qdata.time.{DateTimeInterval, OffsetDate}
 
 import spire.math.Real
 

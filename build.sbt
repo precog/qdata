@@ -151,7 +151,16 @@ lazy val root = project
 lazy val core = project
   .in(file("core"))
   .settings(name := "qdata-core")
+  .dependsOn(time)
   .settings(commonSettings)
   .settings(libraryDependencies ++= Dependencies.core)
+  .settings(excludeTypelevelScalaLibrary)
+  .enablePlugins(AutomateHeaderPlugin)
+
+lazy val time = project
+  .in(file("time"))
+  .settings(name := "qdata-time")
+  .settings(commonSettings)
+  .settings(libraryDependencies ++= Dependencies.time)
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)
