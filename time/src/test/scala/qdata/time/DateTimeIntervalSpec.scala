@@ -17,13 +17,22 @@
 package qdata.time
 
 import slamdata.Predef._
-import quasar.time.DateGenerators._
+
+import qdata.time.Generators._
 
 import java.time._
 
-import org.specs2.matcher.{Expectable, MatchResult, Matcher}
+import org.specs2.ScalaCheck
+import org.specs2.execute.PendingUntilFixed
+import org.specs2.matcher.{
+  Expectable,
+  MatchResult,
+  Matcher,
+  ShouldExpectations
+}
+import org.specs2.mutable.SpecLike
 
-class DateTimeIntervalSpec extends quasar.Qspec {
+class DateTimeIntervalSpec extends SpecLike with ShouldExpectations with PendingUntilFixed with ScalaCheck {
 
   "parsing" should {
     "not parse just a P" in {
