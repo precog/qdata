@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package quasar.qdata
+package qdata
 
 import slamdata.Predef._
 
