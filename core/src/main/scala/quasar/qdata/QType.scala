@@ -24,7 +24,6 @@ object QType {
   final case object QDouble extends QType
   final case object QReal extends QType
 
-  final case object QBytes extends QType
   final case object QString extends QType
   final case object QNull extends QType
   final case object QBoolean extends QType

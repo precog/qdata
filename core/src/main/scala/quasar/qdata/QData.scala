@@ -20,7 +20,6 @@ import slamdata.Predef._
 
 import quasar.time.{DateTimeInterval, OffsetDate}
 
-import scodec.bits.ByteVector
 import spire.math.Real
 
 import java.time.{
@@ -42,9 +41,6 @@ trait QData[A] {
 
   def getReal(a: A): Real
   def makeReal(l: Real): A
-
-  def getBytes(a: A): ByteVector
-  def makeBytes(l: ByteVector): A
 
   def getString(a: A): String
   def makeString(l: String): A
