@@ -145,7 +145,7 @@ lazy val root = project
   .settings(transferPublishAndTagResources)
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
-  .aggregate(core)
+  .aggregate(core, time)
   .enablePlugins(AutomateHeaderPlugin)
 
 lazy val core = project
