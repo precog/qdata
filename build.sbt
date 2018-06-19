@@ -1,5 +1,7 @@
 import scala.Predef._
 
+import qdata.project.Dependencies
+
 import java.lang.{Integer, String, Throwable}
 import scala.{Boolean, List, Predef, None, Some, StringContext, sys, Unit}, Predef.{any2ArrowAssoc, assert, augmentString}
 import scala.collection.Seq
@@ -143,21 +145,22 @@ lazy val root = project
   .settings(transferPublishAndTagResources)
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
-  .aggregate(core)
+  .aggregate(core, time)
   .enablePlugins(AutomateHeaderPlugin)
 
-// common components
-
-/** SQL Parser module.
-  */
 lazy val core = project
   .in(file("core"))
-  .settings(name := "qdata")
+  .settings(name := "qdata-core")
+  .dependsOn(time)
   .settings(commonSettings)
-  .settings(
-    /*
-    libraryDependencies += ...
-     */)
+  .settings(libraryDependencies ++= Dependencies.core)
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)
 
+lazy val time = project
+  .in(file("time"))
+  .settings(name := "qdata-time")
+  .settings(commonSettings)
+  .settings(libraryDependencies ++= Dependencies.time)
+  .settings(excludeTypelevelScalaLibrary)
+  .enablePlugins(AutomateHeaderPlugin)
