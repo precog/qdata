@@ -19,7 +19,6 @@ object Dependencies {
     "org.scalaz"     %% "scalaz-core"       % scalazVersion,
     "org.scalacheck" %% "scalacheck"        % scalacheckVersion % Test,
     "org.specs2"     %% "specs2-core"       % specsVersion      % Test,
-    "org.specs2"     %% "specs2-scalacheck" % specsVersion      % Test,
-    "org.specs2"     %% "specs2-scalaz"     % specsVersion      % Test
+    "org.specs2"     %% "specs2-scalacheck" % specsVersion      % Test
   )
 }
