@@ -32,7 +32,11 @@ import org.specs2.matcher.{
 }
 import org.specs2.mutable.SpecLike
 
-class DateTimeIntervalSpec extends SpecLike with ShouldExpectations with PendingUntilFixed with ScalaCheck {
+class DateTimeIntervalSpec
+    extends SpecLike
+    with ShouldExpectations
+    with PendingUntilFixed
+    with ScalaCheck {
 
   "parsing" should {
     "not parse just a P" in {
