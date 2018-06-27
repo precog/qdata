@@ -161,6 +161,7 @@ lazy val time = project
   .in(file("time"))
   .settings(name := "qdata-time")
   .settings(commonSettings)
+  .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.time)
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)

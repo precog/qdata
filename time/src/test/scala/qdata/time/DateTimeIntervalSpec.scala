@@ -18,7 +18,7 @@ package qdata.time
 
 import slamdata.Predef._
 
-import qdata.time.Generators._
+import qdata.time.TimeGenerators._
 
 import java.time._
 
