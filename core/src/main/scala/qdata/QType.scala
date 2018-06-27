@@ -16,6 +16,8 @@
 
 package qdata
 
+import scalaz.{Equal, Show}
+
 sealed trait QType
 
 object QType {
@@ -38,4 +40,9 @@ object QType {
 
   final case object QArray extends QType
   final case object QObject extends QType
+
+  ////
+
+  implicit val qTypeShow: Show[QType] = Show.showFromToString
+  implicit val qTypeEqual: Equal[QType] = Equal.equalA
 }
