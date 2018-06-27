@@ -34,7 +34,7 @@ import scala.math
 
 import org.scalacheck.{Arbitrary, Gen}
 
-object Generators {
+object TimeGenerators {
 
   // interval
   implicit val arbDuration: Arbitrary[Duration] = genDuration
