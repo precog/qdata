@@ -40,6 +40,7 @@ object QType {
 
   final case object QArray extends QType
   final case object QObject extends QType
+  final case object QMeta extends QType
 
   ////
 
