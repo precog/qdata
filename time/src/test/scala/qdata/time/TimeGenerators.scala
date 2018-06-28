@@ -16,7 +16,6 @@
 
 package qdata.time
 
-import slamdata.Predef._
 
 import java.time.{
   Duration,
@@ -29,10 +28,9 @@ import java.time.{
   ZoneOffset
 }
 import java.time.temporal.ChronoField
-
-import scala.math
-
 import org.scalacheck.{Arbitrary, Gen}
+import scala.math
+import slamdata.Predef._
 
 object TimeGenerators {
 

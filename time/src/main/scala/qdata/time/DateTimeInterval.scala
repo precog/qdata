@@ -16,8 +16,6 @@
 
 package qdata.time
 
-import slamdata.Predef._
-
 import java.time.{
   Duration,
   LocalDate,
@@ -27,9 +25,9 @@ import java.time.{
   OffsetTime,
   Period
 }
-
 import scalaz.\/
 import scalaz.Scalaz._
+import slamdata.Predef._
 
 /**
   * `parse <-> toString` is not an isomorphism, because the first

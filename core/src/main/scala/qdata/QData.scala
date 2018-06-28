@@ -16,12 +16,6 @@
 
 package qdata
 
-import slamdata.Predef._
-
-import qdata.time.{DateTimeInterval, OffsetDate}
-
-import spire.math.Real
-
 import java.time.{
   LocalDate,
   LocalDateTime,
@@ -29,6 +23,10 @@ import java.time.{
   OffsetDateTime,
   OffsetTime,
 }
+import qdata.time.{DateTimeInterval, OffsetDate}
+import slamdata.Predef._
+import spire.math.Real
+
 
 trait QData[A] {
   def tpe(a: A): QType
@@ -101,32 +99,4 @@ trait QData[A] {
   def getMetaValue(a: A): A
   def getMetaMeta(a: A): A
   def makeMeta(value: A, meta: A): A
-
-  ////
-
-  def getArray(a: A): NascentArray = {
-    @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
-    @scala.annotation.tailrec
-    def iterate(cursor: ArrayCursor, nascent: NascentArray): NascentArray =
-      if (hasNextArray(cursor))
-        iterate(stepArray(cursor), pushArray(getArrayAt(cursor), nascent))
-      else
-        nascent
-
-    iterate(getArrayCursor(a), prepArray)
-  }
-
-  def getObject(a: A): NascentObject = {
-    @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
-    @scala.annotation.tailrec
-    def iterate(cursor: ObjectCursor, nascent: NascentObject): NascentObject =
-      if (hasNextObject(cursor))
-        iterate(
-	  stepObject(cursor),
-	  pushObject(getObjectKeyAt(cursor), getObjectValueAt(cursor), nascent))
-      else
-        nascent
-
-    iterate(getObjectCursor(a), prepObject)
-  }
 }
