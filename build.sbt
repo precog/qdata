@@ -153,6 +153,7 @@ lazy val core = project
   .settings(name := "qdata-core")
   .dependsOn(time % BothScopes)
   .settings(commonSettings)
+  .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.core)
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)
