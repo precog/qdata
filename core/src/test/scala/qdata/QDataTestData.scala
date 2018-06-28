@@ -16,10 +16,6 @@
 
 package qdata
 
-import slamdata.Predef._
-
-import qdata.time.{DateTimeInterval, OffsetDate}
-
 import java.time.{
   LocalDate,
   LocalDateTime,
@@ -27,8 +23,9 @@ import java.time.{
   OffsetDateTime,
   OffsetTime,
 }
+import qdata.time.{DateTimeInterval, OffsetDate}
 import scala.sys.error
-
+import slamdata.Predef._
 import spire.math.Real
 
 object QDataTestData extends QData[TestData] {

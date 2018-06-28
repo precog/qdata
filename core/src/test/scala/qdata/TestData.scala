@@ -16,10 +16,6 @@
 
 package qdata
 
-import slamdata.Predef._
-
-import qdata.time.{DateTimeInterval, OffsetDate}
-
 import java.time.{
   LocalDate,
   LocalDateTime,
@@ -27,8 +23,9 @@ import java.time.{
   OffsetDateTime,
   OffsetTime,
 }
-
+import slamdata.Predef._
 import spire.math.Real
+import qdata.time.{DateTimeInterval, OffsetDate}
 
 sealed trait TestData
 

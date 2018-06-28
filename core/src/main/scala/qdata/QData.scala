@@ -16,12 +16,6 @@
 
 package qdata
 
-import slamdata.Predef._
-
-import qdata.time.{DateTimeInterval, OffsetDate}
-
-import spire.math.Real
-
 import java.time.{
   LocalDate,
   LocalDateTime,
@@ -29,6 +23,10 @@ import java.time.{
   OffsetDateTime,
   OffsetTime,
 }
+import qdata.time.{DateTimeInterval, OffsetDate}
+import slamdata.Predef._
+import spire.math.Real
+
 
 trait QData[A] {
   def tpe(a: A): QType

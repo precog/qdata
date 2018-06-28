@@ -16,14 +16,12 @@
 
 package qdata.time
 
-import slamdata.Predef._
-
+import java.time.{LocalDate, Period, ZoneOffset}
 import java.time.format.DateTimeFormatter
 import java.time.temporal._
-import java.time.{LocalDate, Period, ZoneOffset}
-
 import scalaz.std.anyVal._
 import scalaz.syntax.equal._
+import slamdata.Predef._
 
 // this doesn't exist in java.time but is still supported by several connectors
 final case class OffsetDate(date: LocalDate, offset: ZoneOffset) extends TemporalAccessor {

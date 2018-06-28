@@ -16,12 +16,7 @@
 
 package qdata.time
 
-import slamdata.Predef._
-
-import qdata.time.TimeGenerators._
-
 import java.time._
-
 import org.specs2.ScalaCheck
 import org.specs2.execute.PendingUntilFixed
 import org.specs2.matcher.{
@@ -31,6 +26,8 @@ import org.specs2.matcher.{
   ShouldExpectations
 }
 import org.specs2.mutable.SpecLike
+import qdata.time.TimeGenerators._
+import slamdata.Predef._
 
 class DateTimeIntervalSpec
     extends SpecLike
