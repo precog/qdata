@@ -151,7 +151,7 @@ lazy val root = project
 lazy val core = project
   .in(file("core"))
   .settings(name := "qdata-core")
-  .dependsOn(time)
+  .dependsOn(time % BothScopes)
   .settings(commonSettings)
   .settings(libraryDependencies ++= Dependencies.core)
   .settings(excludeTypelevelScalaLibrary)
