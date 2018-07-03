@@ -118,6 +118,23 @@ class QDataCodec[A](qdata: QData[A]) {
         Attempt.successful(qdata.getInterval(interval).toString))
   }
 
+  /* To encode an array, we first call `getArrayCursor` which
+   * gives us a cursor into the array. We then enter a loop,
+   * calling `hasNextArray(cursor)` to determine if there is
+   * another element in the array. If there is another element,
+   * we retrieve it using `getArrayAt(cursor)` and then loop
+   * again, advancing the cursor with `stepArray(cursor)`. If
+   * there is not another element, we return the `BitVector`
+   * that we have been accumulating.
+   *
+   * To decode an array, we first call `prepArray` to obtain
+   * an empty array onto which we'll push elements as we decode
+   * them. We decode the first element, and call `pushArray`
+   * to put the element in the accumulation array. We then loop
+   * over the remainder, continuing until there are no more
+   * elements, at which point we call `makeArray` on the
+   * accumulator.
+   */
   val arrayCodec: Version => Codec[A] = memoize { version =>
     // we encode with an extra bit prepended to each element of the encoded array
     // instead we could encode a single "stop" flag
@@ -172,8 +189,25 @@ class QDataCodec[A](qdata: QData[A]) {
     Codec[A](encoder(_), decoder(_))
   }
 
+  /* To encode an object, we first call `getObjectCursor` which
+   * gives us a cursor into the object. We then enter a loop,
+   * calling `hasNextObject(cursor)` to determine if there is
+   * another element pair in the object. If there is another pair,
+   * we retrieve it using `getObjectAt(cursor)` and then loop
+   * again, advancing the cursor with `stepObject(cursor)`. If
+   * there is not another pair, we return the `BitVector`
+   * that we have been accumulating.
+   *
+   * To decode an object, we first call `prepObject` to obtain
+   * an empty object onto which we'll push element pairs as we decode
+   * them. We decode the first pair, and call `pushObject`
+   * to put the pair in the accumulation object. We then loop
+   * over the remainder, continuing until there are no more
+   * pairs, at which point we call `makeObject` on the
+   * accumulator.
+   */
   val objectCodec: Version => Codec[A] = memoize { version =>
-    // we encode with an extra bit prepended to each element of the encoded object
+    // we encode with an extra bit prepended to each element pair of the encoded object
     val codec: Codec[Option[(String, A)]] =
       optional(bool, Codec.lazily(utf8_32 ~ qdataCodec(version)))
 
