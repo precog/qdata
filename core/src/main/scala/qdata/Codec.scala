@@ -173,8 +173,7 @@ class QDataCodec[A](qdata: QData[A]) {
   }
 
   val objectCodec: Version => Codec[A] = memoize { version =>
-    // we encode with an extra bit prepended to each element of the encoded array
-    // instead we could encode a single "stop" flag
+    // we encode with an extra bit prepended to each element of the encoded object
     val codec: Codec[Option[(String, A)]] =
       optional(bool, Codec.lazily(utf8_32 ~ qdataCodec(version)))
 
