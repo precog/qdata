@@ -38,7 +38,8 @@ import scodec.codecs.{
   int64,
   optional,
   provide,
-  uint4
+  uint4,
+  utf8_32
 }
 import slamdata.Predef._
 import spire.math.Real
@@ -61,7 +62,7 @@ class QDataCodec[A](qdata: QData[A]) {
       qdata.getReal(_).toString)
 
   val stringCodec: Version => Codec[A] = memoize { _ =>
-    ascii32.xmap[A](qdata.makeString, qdata.getString)
+    utf8_32.xmap[A](qdata.makeString, qdata.getString)
   }
 
   val nullCodec: Version => Codec[A] = memoize { _ =>
@@ -176,7 +177,7 @@ class QDataCodec[A](qdata: QData[A]) {
     // we encode with an extra bit prepended to each element of the encoded array
     // instead we could encode a single "stop" flag
     val codec: Codec[Option[(String, A)]] =
-      optional(bool, Codec.lazily(ascii32 ~ qdataCodec(version)))
+      optional(bool, Codec.lazily(utf8_32 ~ qdataCodec(version)))
 
     def encoder(obj: A): Attempt[BitVector] = {
       @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
