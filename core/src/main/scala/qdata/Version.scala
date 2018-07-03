@@ -16,9 +16,10 @@
 
 package qdata
 
+import slamdata.Predef.{Product, Serializable}
 import scalaz.{Equal, Show}
 
-sealed trait Version
+sealed trait Version extends Product with Serializable
 
 object Version {
   case object v1 extends Version
