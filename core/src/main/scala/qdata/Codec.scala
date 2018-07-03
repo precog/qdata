@@ -27,7 +27,6 @@ import qdata.time.{DateTimeInterval, OffsetDate}
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scalaz.\/
-import scalaz.syntax.equal._
 import scodec.{Attempt, Codec, DecodeResult, Err}
 import scodec.bits.BitVector
 import scodec.codecs.{
@@ -238,7 +237,7 @@ class QDataCodec[A](qdata: QData[A]) {
   }
 
   def isType(qType: QType): PartialFunction[A, A] = {
-    case a if qdata.tpe(a) === qType => a
+    case a if qdata.tpe(a) eq qType => a
   }
 
   ////
