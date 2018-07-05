@@ -87,6 +87,25 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
     roundtrip[TestData](codec, dataObject)
   }
 
+  "roundtrip unicode string" >> {
+    val codec: Codec[TestData] =
+      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+
+    val data: TestData = TestData._String("넼매뉫썾 foobarbaz")
+
+    roundtrip[TestData](codec, data)
+  }
+
+  "roundtrip unicode-keyed object" >> {
+    val codec: Codec[TestData] =
+      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+
+    val data: TestData = TestData._Object(Vector(
+      ("넼매뉫썾 foobarbaz", TestData._Null())))
+
+    roundtrip[TestData](codec, data)
+  }
+
   "roundtrip arbitrary test data" >> {
     val codec: Codec[TestData] =
       new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
