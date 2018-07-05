@@ -26,7 +26,7 @@ import java.time.{
 import qdata.time.{DateTimeInterval, OffsetDate}
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scalaz.\/
+import scala.util.control.NonFatal
 import scodec.{Attempt, Codec, DecodeResult, Err}
 import scodec.bits.BitVector
 import scodec.codecs.{
@@ -303,15 +303,13 @@ class QDataCodec[A](qdata: QData[A]) {
   private def exmapAscii[B](parse: String => B, make: B => A, get: A => String)
       : Version => Codec[A] = memoize { _ =>
     ascii32.exmap[A](
-      str =>
-        Attempt.fromEither(
-          \/.fromTryCatchNonFatal(parse(str))
-            .bimap(
-              ex => Err(s"Failed to parse $str\n${ex.getMessage}"),
-              make)
-            .toEither),
-      time =>
-        Attempt.successful(get(time)))
+      str => try {
+        Attempt.successful(make(parse(str)))
+      } catch {
+        case NonFatal(ex) =>
+          Attempt.failure(Err(s"Failed to parse $str\n${ex.getMessage}"))
+      },
+      value => Attempt.successful(get(value)))
   }
 
   private def memoize[A](f: Version => Codec[A]): Version => Codec[A] = {
