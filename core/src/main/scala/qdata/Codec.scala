@@ -47,7 +47,7 @@ class QDataCodec[A](qdata: QData[A]) {
   import QType._
 
   val longCodec: Version => Codec[A] = memoize { _ =>
-    Codec.lazily(int64.xmap[A](qdata.makeLong, qdata.getLong))
+    int64.xmap[A](qdata.makeLong, qdata.getLong)
   }
 
   val doubleCodec: Version => Codec[A] = memoize { _ =>
