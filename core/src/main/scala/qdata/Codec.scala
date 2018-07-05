@@ -55,7 +55,7 @@ class QDataCodec[A](qdata: QData[A]) {
   }
 
   val realCodec: Version => Codec[A] =
-    exmapString[Real](
+    exmapAscii[Real](
       Real.apply,
       qdata.makeReal,
       qdata.getReal(_).toString)
@@ -73,37 +73,37 @@ class QDataCodec[A](qdata: QData[A]) {
   }
 
   val localDateTimeCodec: Version => Codec[A] =
-    exmapString[LocalDateTime](
+    exmapAscii[LocalDateTime](
       LocalDateTime.parse,
       qdata.makeLocalDateTime,
       qdata.getLocalDateTime(_).toString)
 
   val localDateCodec: Version => Codec[A] =
-    exmapString[LocalDate](
+    exmapAscii[LocalDate](
       LocalDate.parse,
       qdata.makeLocalDate,
       qdata.getLocalDate(_).toString)
 
   val localTimeCodec: Version => Codec[A] =
-    exmapString[LocalTime](
+    exmapAscii[LocalTime](
       LocalTime.parse,
       qdata.makeLocalTime,
       qdata.getLocalTime(_).toString)
 
   val offsetDateTimeCodec: Version => Codec[A] =
-    exmapString[OffsetDateTime](
+    exmapAscii[OffsetDateTime](
       OffsetDateTime.parse,
       qdata.makeOffsetDateTime,
       qdata.getOffsetDateTime(_).toString)
 
   val offsetDateCodec: Version => Codec[A] =
-    exmapString[OffsetDate](
+    exmapAscii[OffsetDate](
       OffsetDate.parse,
       qdata.makeOffsetDate,
       qdata.getOffsetDate(_).toString)
 
   val offsetTimeCodec: Version => Codec[A] =
-    exmapString[OffsetTime](
+    exmapAscii[OffsetTime](
       OffsetTime.parse,
       qdata.makeOffsetTime,
       qdata.getOffsetTime(_).toString)
@@ -266,7 +266,7 @@ class QDataCodec[A](qdata: QData[A]) {
 
   ////
 
-  private def exmapString[B](parse: String => B, make: B => A, get: A => String)
+  private def exmapAscii[B](parse: String => B, make: B => A, get: A => String)
       : Version => Codec[A] = memoize { _ =>
     ascii32.exmap[A](
       str =>
