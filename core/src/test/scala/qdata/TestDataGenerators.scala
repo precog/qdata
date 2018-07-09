@@ -18,7 +18,7 @@ package qdata
 
 import org.scalacheck.{Arbitrary, Gen}
 import qdata.time.TimeGenerators
-import slamdata.Predef.{Int, List, Long}
+import slamdata.Predef.{Char, Int, List, Long, String}
 import spire.math.Real
 
 object TestDataGenerators {
@@ -39,7 +39,7 @@ object TestDataGenerators {
     Gen.choose(Long.MinValue, Long.MaxValue) map TestData._Long,
     Arbitrary.arbDouble.arbitrary map TestData._Double,
     Arbitrary.arbBigDecimal.arbitrary map (dec => TestData._Real(Real(dec))),
-    Gen.asciiStr map TestData._String,
+    genUnicodeString map TestData._String,
     TestData._Null(),
     TestData._Boolean(true),
     TestData._Boolean(false))
@@ -58,13 +58,22 @@ object TestDataGenerators {
     genDateTime)
 
   private def genNested(max: Int): Gen[TestData] = Gen.oneOf[TestData](
-    listOf(genTestData(max)).map(data => TestData._Array(data.toVector)),
-    listOf(Gen.zip(Gen.asciiStr, genTestData(max))).map(data => TestData._Object(data.toVector)),
+    listOfUpTo16(genTestData(max)).map(data => TestData._Array(data.toVector)),
+    listOfUpTo16(Gen.zip(genUnicodeString, genTestData(max))).map(data => TestData._Object(data.toVector)),
     Gen.zip(genTestData(max), genTestData(max)) map { case (d1, d2) => TestData._Meta(d1, d2) })
 
-  private def listOf[A](gen: Gen[A]): Gen[List[A]] =
+  private def listOfUpTo16[A](gen: Gen[A]): Gen[List[A]] =
     for {
       n <- Gen.choose(0, 16)
       c <- Gen.listOfN[A](n, gen)
     } yield c
+
+  // FIXME generate from the space of all valid utf8-encodable characters
+  private def genUnicodeChar: Gen[Char] =
+    Gen.frequency(
+      (100, Gen.asciiChar),
+      (1, Gen.choose('λ', '貗')))
+
+  private def genUnicodeString: Gen[String] =
+    Gen.listOf(genUnicodeChar).map(_.mkString)
 }

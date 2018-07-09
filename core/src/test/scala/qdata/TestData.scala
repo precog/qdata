@@ -23,6 +23,7 @@ import java.time.{
   OffsetDateTime,
   OffsetTime,
 }
+import scalaz.{Equal, Show}
 import slamdata.Predef._
 import spire.math.Real
 import qdata.time.{DateTimeInterval, OffsetDate}
@@ -49,4 +50,16 @@ object TestData {
   final case class _Array(value: Vector[TestData]) extends TestData
   final case class _Object(value: Vector[(String, TestData)]) extends TestData
   final case class _Meta(value: TestData, meta: TestData) extends TestData
+
+  ////
+
+  implicit val equalTestData: Equal[TestData] = Equal.equalA
+
+  implicit val showTestData: Show[TestData] = new Show[TestData] {
+    override def shows(data: TestData): String = data match {
+      case _Array(value) => Show.showFromToString.shows(value.toList)
+      case _Object(value) => Show.showFromToString.shows(value.toList)
+      case other => Show.showFromToString.shows(other)
+    }
+  }
 }
