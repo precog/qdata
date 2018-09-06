@@ -23,7 +23,7 @@ import slamdata.Predef.Some
 object QDataTestDataSpec extends SpecLike with ScalaCheck {
   import TestDataGenerators._
 
-  val test = new QDataRoundtrip[TestData](QDataTestData)
+  val test = QDataRoundtrip[TestData]
 
   "roundtrip arbitray TestData" >> prop { data: TestData =>
     test.roundtrip(data) must_=== Some(data)
