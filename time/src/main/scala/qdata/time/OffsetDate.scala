@@ -57,7 +57,7 @@ final case class OffsetDate(date: LocalDate, offset: ZoneOffset) extends Tempora
 }
 
 object OffsetDate {
-  def parse(str: String) =
+  def parse(str: String): OffsetDate =
     DateTimeFormatter.ISO_OFFSET_DATE.parse(str, query)
 
   val query: TemporalQuery[OffsetDate] = new TemporalQuery[OffsetDate] {

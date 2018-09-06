@@ -11,17 +11,8 @@ import sbt._, Keys._
 import sbt.std.Transform.DummyTaskMap
 import sbt.TestFrameworks.Specs2
 import sbtrelease._, ReleaseStateTransformations._, Utilities._
-import slamdata.SbtSlamData.transferPublishAndTagResources
 
 val BothScopes = "test->test;compile->compile"
-
-// Exclusive execution settings
-lazy val ExclusiveTests = config("exclusive") extend Test
-
-val ExclusiveTest = Tags.Tag("exclusive-test")
-
-def exclusiveTasks(tasks: Scoped*) =
-  tasks.flatMap(inTask(_)(tags := Seq((ExclusiveTest, 1))))
 
 lazy val buildSettings = commonBuildSettings ++ Seq(
   organization := "com.slamdata",
@@ -52,10 +43,6 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
     Wart.ImplicitParameter,     // - creates many compile errors when enabled - needs to be enabled incrementally
     Wart.ImplicitConversion,    // - see mpilquist/simulacrum#35
     Wart.Nothing),              // - see wartremover/wartremover#263
-  // Normal tests exclude those tagged in Specs2 with 'exclusive'.
-  testOptions in Test := Seq(Tests.Argument(Specs2, "exclude", "exclusive", "showtimes")),
-  // Exclusive tests include only those tagged with 'exclusive'.
-  testOptions in ExclusiveTests := Seq(Tests.Argument(Specs2, "include", "exclusive", "showtimes")),
 
   logBuffered in Test := isTravisBuild.value,
 
@@ -71,9 +58,6 @@ concurrentRestrictions in Global := {
   else
     (concurrentRestrictions in Global).value
 }
-
-// Tasks tagged with `ExclusiveTest` should be run exclusively.
-concurrentRestrictions in Global += Tags.exclusive(ExclusiveTest)
 
 // copied from quasar
 version in ThisBuild := {
@@ -142,7 +126,6 @@ lazy val root = project
   .in(file("."))
   .settings(commonSettings)
   .settings(noPublishSettings)
-  .settings(transferPublishAndTagResources)
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
   .aggregate(core, time)

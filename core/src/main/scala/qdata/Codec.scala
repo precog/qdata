@@ -312,14 +312,14 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
       value => Attempt.successful(get(value)))
   }
 
-  private def memoize[A](f: Version => Codec[A]): Version => Codec[A] = {
+  private def memoize[B](f: Version => Codec[B]): Version => Codec[B] = {
     @SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
-    val memoized: mutable.Map[Version, Codec[A]] =
-      mutable.Map[Version, Codec[A]]()
+    val memoized: mutable.Map[Version, Codec[B]] =
+      mutable.Map[Version, Codec[B]]()
 
     { version =>
       memoized.get(version).getOrElse {
-        val back: Codec[A] = f(version)
+        val back: Codec[B] = f(version)
         memoized.update(version, back)
         back
       }
