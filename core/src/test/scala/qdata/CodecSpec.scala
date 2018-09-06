@@ -16,11 +16,12 @@
 
 package qdata
 
+import slamdata.Predef.Vector
+
 import org.specs2.ScalaCheck
 import org.specs2.mutable.SpecLike
 import scodec.{Attempt, DecodeResult, Codec}
 import scodec.bits.BitVector
-import slamdata.Predef.Vector
 import spire.math.Real
 
 object QDataCodecSpec extends SpecLike with ScalaCheck {
