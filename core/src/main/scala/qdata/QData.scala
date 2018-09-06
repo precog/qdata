@@ -100,3 +100,7 @@ trait QData[A] {
   def getMetaMeta(a: A): A
   def makeMeta(value: A, meta: A): A
 }
+
+object QData {
+  def apply[A](implicit qd: QData[A]): QData[A] = qd
+}

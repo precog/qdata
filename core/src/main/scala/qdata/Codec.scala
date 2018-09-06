@@ -43,7 +43,7 @@ import scodec.codecs.{
 import slamdata.Predef._
 import spire.math.Real
 
-class QDataCodec[A](qdata: QData[A]) {
+final class QDataCodec[A](implicit qdata: QData[A]) {
   import QType._
 
   val longCodec: Version => Codec[A] = memoize { _ =>
@@ -325,4 +325,9 @@ class QDataCodec[A](qdata: QData[A]) {
       }
     }
   }
+}
+
+object QDataCodec {
+  def apply[A: QData]: QDataCodec[A] =
+    new QDataCodec[A]
 }

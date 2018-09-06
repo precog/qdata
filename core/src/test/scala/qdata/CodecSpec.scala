@@ -27,7 +27,7 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
   import TestDataGenerators._
 
   "memoize all the codecs" in {
-    val qdata = new QDataCodec[TestData](QDataTestData)
+    val qdata = QDataCodec[TestData]
     val version = Version.Latest
 
     (qdata.longCodec(version) eq qdata.longCodec(version)) must beTrue
@@ -50,11 +50,11 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
     (qdata.metaCodec(version) eq qdata.metaCodec(version)) must beTrue
 
     (qdata.qdataCodec(version) eq qdata.qdataCodec(version)) must beTrue
-  } 
+  }
 
   "roundtrip nested array" >> {
     val codec: Codec[TestData] =
-      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+      QDataCodec[TestData].qdataCodec(Version.Latest)
 
     val dataArray: TestData =
       TestData._Array(Vector(
@@ -75,7 +75,7 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
 
   "roundtrip nested object" >> {
     val codec: Codec[TestData] =
-      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+      QDataCodec[TestData].qdataCodec(Version.Latest)
 
     val dataObject: TestData =
       TestData._Object(Vector(
@@ -89,7 +89,7 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
 
   "roundtrip unicode string" >> {
     val codec: Codec[TestData] =
-      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+      QDataCodec[TestData].qdataCodec(Version.Latest)
 
     val data: TestData = TestData._String("넼매뉫썾 foobarbaz")
 
@@ -98,7 +98,7 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
 
   "roundtrip unicode-keyed object" >> {
     val codec: Codec[TestData] =
-      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+      QDataCodec[TestData].qdataCodec(Version.Latest)
 
     val data: TestData = TestData._Object(Vector(
       ("넼매뉫썾 foobarbaz", TestData._Null())))
@@ -108,7 +108,7 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
 
   "roundtrip arbitrary test data" >> {
     val codec: Codec[TestData] =
-      new QDataCodec[TestData](QDataTestData).qdataCodec(Version.Latest)
+      QDataCodec[TestData].qdataCodec(Version.Latest)
 
     prop { data: TestData =>
       roundtrip[TestData](codec, data)

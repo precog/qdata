@@ -20,7 +20,7 @@ import scala.annotation.tailrec
 import scalaz.\/
 import slamdata.Predef._
 
-class QDataRoundtrip[A](val qdata: QData[A]) {
+final class QDataRoundtrip[A](implicit qdata: QData[A]) {
   import qdata._
   import QType._
 
@@ -74,4 +74,9 @@ class QDataRoundtrip[A](val qdata: QData[A]) {
 
     iterate(getObjectCursor(a), prepObject)
   }
+}
+
+object QDataRoundtrip {
+  def apply[A: QData]: QDataRoundtrip[A] =
+    new QDataRoundtrip[A]
 }
