@@ -41,8 +41,7 @@ jobs:
       env:
       script:
         - set -e
-        - $SBT transferPublishAndTagResources
-        - TRAVIS_JOB_NUMBER=1 scripts/publishAndTag 'slamdata/qdata'
+        - scripts/qdataPublishAndTag
 
       git:
         depth: false

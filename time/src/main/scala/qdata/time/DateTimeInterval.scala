@@ -117,10 +117,10 @@ object DateTimeInterval {
   def make(years: Int, months: Int, days: Int, seconds: Long, nanos: Long): DateTimeInterval =
     DateTimeInterval(Period.of(years, months, days), Duration.ofSeconds(seconds, nanos))
 
-  def ofPeriod(period: Period) =
+  def ofPeriod(period: Period): DateTimeInterval =
     DateTimeInterval(period, Duration.ZERO)
 
-  def ofDuration(duration: Duration) =
+  def ofDuration(duration: Duration): DateTimeInterval =
     DateTimeInterval(Period.ZERO, duration)
 
   def ofYears(years: Int): DateTimeInterval =

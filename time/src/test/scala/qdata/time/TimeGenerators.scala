@@ -122,8 +122,6 @@ object TimeGenerators {
   ////
 
   private def genSeconds: Gen[Long] = Gen.choose(Int.MinValue, Int.MaxValue) map (_.toLong)
-  private def genSecondOfDay: Gen[Long] = Gen.choose(0L, 24L * 60 * 60 - 1)
-  private def genMillis: Gen[Long] = Gen.choose(0L, 999L)
   private def genNanos: Gen[Long] = Gen.choose(0L, 999999999L)
   private def genYears: Gen[Int] = Gen.choose(-9999999, 9999999)
   private def genMonths: Gen[Int] = Gen.choose(-100, 100)
