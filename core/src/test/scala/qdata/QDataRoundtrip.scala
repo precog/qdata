@@ -16,67 +16,18 @@
 
 package qdata
 
-import scala.annotation.tailrec
 import scalaz.\/
 import slamdata.Predef._
 
-final class QDataRoundtrip[A](implicit qdata: QData[A]) {
-  import qdata._
-  import QType._
+final class QDataRoundtrip[A: QDataEncode: QDataDecode] {
 
-  def roundtripUnsafe(data: A): A =
-    tpe(data) match {
-      case QNull => makeNull
-      case QString => makeString(getString(data))
-      case QBoolean => makeBoolean(getBoolean(data))
-      case QReal => makeReal(getReal(data))
-      case QDouble => makeDouble(getDouble(data))
-      case QLong => makeLong(getLong(data))
-      case QOffsetDateTime => makeOffsetDateTime(getOffsetDateTime(data))
-      case QOffsetDate => makeOffsetDate(getOffsetDate(data))
-      case QOffsetTime => makeOffsetTime(getOffsetTime(data))
-      case QLocalDateTime => makeLocalDateTime(getLocalDateTime(data))
-      case QLocalDate => makeLocalDate(getLocalDate(data))
-      case QLocalTime => makeLocalTime(getLocalTime(data))
-      case QInterval => makeInterval(getInterval(data))
-      case QArray => makeArray(getArray(data))
-      case QObject => makeObject(getObject(data))
-      case QMeta => makeMeta(getMetaValue(data), getMetaMeta(data))
-    }
+  def roundtripUnsafe(data: A): A = QData.convert[A, A](data)
 
   def roundtrip(data: A): Option[A] =
     \/.fromTryCatchNonFatal(roundtripUnsafe(data)).toOption
-
-  ////
-
-  private def getArray(a: A): NascentArray = {
-    @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
-    @tailrec
-    def iterate(cursor: ArrayCursor, nascent: NascentArray): NascentArray =
-      if (hasNextArray(cursor))
-        iterate(stepArray(cursor), pushArray(getArrayAt(cursor), nascent))
-      else
-        nascent
-
-    iterate(getArrayCursor(a), prepArray)
-  }
-
-  private def getObject(a: A): NascentObject = {
-    @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
-    @tailrec
-    def iterate(cursor: ObjectCursor, nascent: NascentObject): NascentObject =
-      if (hasNextObject(cursor))
-        iterate(
-         stepObject(cursor),
-         pushObject(getObjectKeyAt(cursor), getObjectValueAt(cursor), nascent))
-      else
-        nascent
-
-    iterate(getObjectCursor(a), prepObject)
-  }
 }
 
 object QDataRoundtrip {
-  def apply[A: QData]: QDataRoundtrip[A] =
+  def apply[A: QDataEncode: QDataDecode]: QDataRoundtrip[A] =
     new QDataRoundtrip[A]
 }

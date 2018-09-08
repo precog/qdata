@@ -16,99 +16,15 @@
 
 package qdata
 
-import java.time.{
-  LocalDate,
-  LocalDateTime,
-  LocalTime,
-  OffsetDateTime,
-  OffsetTime,
-}
-import qdata.time.{DateTimeInterval, OffsetDate}
 import slamdata.Predef._
-import spire.math.Real
-
-
-trait QData[A] {
-  def tpe(a: A): QType
-
-  def getLong(a: A): Long
-  def makeLong(l: Long): A
-
-  def getDouble(a: A): Double
-  def makeDouble(l: Double): A
-
-  def getReal(a: A): Real
-  def makeReal(l: Real): A
-
-  def getString(a: A): String
-  def makeString(l: String): A
-
-  def makeNull: A
-
-  def getBoolean(a: A): Boolean
-  def makeBoolean(l: Boolean): A
-
-  def getLocalDateTime(a: A): LocalDateTime
-  def makeLocalDateTime(l: LocalDateTime): A
-
-  def getLocalDate(a: A): LocalDate
-  def makeLocalDate(l: LocalDate): A
-
-  def getLocalTime(a: A): LocalTime
-  def makeLocalTime(l: LocalTime): A
-
-  def getOffsetDateTime(a: A): OffsetDateTime
-  def makeOffsetDateTime(l: OffsetDateTime): A
-
-  def getOffsetDate(a: A): OffsetDate
-  def makeOffsetDate(l: OffsetDate): A
-
-  def getOffsetTime(a: A): OffsetTime
-  def makeOffsetTime(l: OffsetTime): A
-
-  def getInterval(a: A): DateTimeInterval
-  def makeInterval(l: DateTimeInterval): A
-
-  type ArrayCursor
-
-  def getArrayCursor(a: A): ArrayCursor
-  def hasNextArray(ac: ArrayCursor): Boolean
-  def getArrayAt(ac: ArrayCursor): A
-  def stepArray(ac: ArrayCursor): ArrayCursor
-
-  type NascentArray
-
-  def prepArray: NascentArray
-  def pushArray(a: A, na: NascentArray): NascentArray
-  def makeArray(na: NascentArray): A
-
-  type ObjectCursor
-
-  def getObjectCursor(a: A): ObjectCursor
-  def hasNextObject(ac: ObjectCursor): Boolean
-  def getObjectKeyAt(ac: ObjectCursor): String
-  def getObjectValueAt(ac: ObjectCursor): A
-  def stepObject(ac: ObjectCursor): ObjectCursor
-
-  type NascentObject
-
-  def prepObject: NascentObject
-  def pushObject(key: String, a: A, na: NascentObject): NascentObject
-  def makeObject(na: NascentObject): A
-
-  def getMetaValue(a: A): A
-  def getMetaMeta(a: A): A
-  def makeMeta(value: A, meta: A): A
-}
 
 object QData {
-  def apply[A](implicit qd: QData[A]): QData[A] = qd
 
   @SuppressWarnings(Array(
     "org.wartremover.warts.Recursion",
     "org.wartremover.warts.Var",
     "org.wartremover.warts.While"))
-  def convert[A, B](a: A)(implicit qda: QData[A], qdb: QData[B]): B = {
+  def convert[A, B](a: A)(implicit qda: QDataDecode[A], qdb: QDataEncode[B]): B = {
     import QType._
 
     qda.tpe(a) match {
