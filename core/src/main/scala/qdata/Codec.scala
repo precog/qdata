@@ -43,79 +43,79 @@ import scodec.codecs.{
 import slamdata.Predef._
 import spire.math.Real
 
-final class QDataCodec[A](implicit qdata: QData[A]) {
+final class QDataCodec[A](implicit en: QDataEncode[A], de: QDataDecode[A]) {
   import QType._
 
   val longCodec: Version => Codec[A] = memoize { _ =>
-    int64.xmap[A](qdata.makeLong, qdata.getLong)
+    int64.xmap[A](en.makeLong, de.getLong)
   }
 
   val doubleCodec: Version => Codec[A] = memoize { _ =>
-    double.xmap[A](qdata.makeDouble, qdata.getDouble)
+    double.xmap[A](en.makeDouble, de.getDouble)
   }
 
   val realCodec: Version => Codec[A] =
     exmapAscii[Real](
       Real.apply,
-      qdata.makeReal,
-      qdata.getReal(_).toString)
+      en.makeReal,
+      de.getReal(_).toString)
 
   val stringCodec: Version => Codec[A] = memoize { _ =>
-    utf8_32.xmap[A](qdata.makeString, qdata.getString)
+    utf8_32.xmap[A](en.makeString, de.getString)
   }
 
   val nullCodec: Version => Codec[A] = memoize { _ =>
-    provide(qdata.makeNull)
+    provide(en.makeNull)
   }
 
   val booleanCodec: Version => Codec[A] = memoize { _ =>
-    bool.xmap[A](qdata.makeBoolean, qdata.getBoolean)
+    bool.xmap[A](en.makeBoolean, de.getBoolean)
   }
 
   val localDateTimeCodec: Version => Codec[A] =
     exmapAscii[LocalDateTime](
       LocalDateTime.parse,
-      qdata.makeLocalDateTime,
-      qdata.getLocalDateTime(_).toString)
+      en.makeLocalDateTime,
+      de.getLocalDateTime(_).toString)
 
   val localDateCodec: Version => Codec[A] =
     exmapAscii[LocalDate](
       LocalDate.parse,
-      qdata.makeLocalDate,
-      qdata.getLocalDate(_).toString)
+      en.makeLocalDate,
+      de.getLocalDate(_).toString)
 
   val localTimeCodec: Version => Codec[A] =
     exmapAscii[LocalTime](
       LocalTime.parse,
-      qdata.makeLocalTime,
-      qdata.getLocalTime(_).toString)
+      en.makeLocalTime,
+      de.getLocalTime(_).toString)
 
   val offsetDateTimeCodec: Version => Codec[A] =
     exmapAscii[OffsetDateTime](
       OffsetDateTime.parse,
-      qdata.makeOffsetDateTime,
-      qdata.getOffsetDateTime(_).toString)
+      en.makeOffsetDateTime,
+      de.getOffsetDateTime(_).toString)
 
   val offsetDateCodec: Version => Codec[A] =
     exmapAscii[OffsetDate](
       OffsetDate.parse,
-      qdata.makeOffsetDate,
-      qdata.getOffsetDate(_).toString)
+      en.makeOffsetDate,
+      de.getOffsetDate(_).toString)
 
   val offsetTimeCodec: Version => Codec[A] =
     exmapAscii[OffsetTime](
       OffsetTime.parse,
-      qdata.makeOffsetTime,
-      qdata.getOffsetTime(_).toString)
+      en.makeOffsetTime,
+      de.getOffsetTime(_).toString)
 
   val intervalCodec: Version => Codec[A] = memoize { _ =>
     ascii32.exmap[A](
       str =>
         Attempt.fromOption(
-          DateTimeInterval.parse(str).map(qdata.makeInterval),
+          DateTimeInterval.parse(str).map(en.makeInterval),
           Err(s"Failed to parse $str as a DateTimeInterval")),
       interval =>
-        Attempt.successful(qdata.getInterval(interval).toString))
+        Attempt.successful(de.getInterval(interval).toString))
   }
 
   /* To encode an array, we first call `getArrayCursor` which
@@ -144,15 +144,15 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
     def encoder(array: A): Attempt[BitVector] = {
       @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
       @tailrec
-      def loop(cursor: qdata.ArrayCursor, prev: Attempt[BitVector]): Attempt[BitVector] =
-        if (qdata.hasNextArray(cursor)) {
+      def loop(cursor: de.ArrayCursor, prev: Attempt[BitVector]): Attempt[BitVector] =
+        if (de.hasNextArray(cursor)) {
           val concat: Attempt[BitVector] =
             for {
               prevBits <- prev
-              step <- codec.encode(Some(qdata.getArrayAt(cursor)))
+              step <- codec.encode(Some(de.getArrayAt(cursor)))
             } yield prevBits ++ step
 
-          loop(qdata.stepArray(cursor), concat)
+          loop(de.stepArray(cursor), concat)
         } else {
           for {
             prevBits <- prev
@@ -160,30 +160,30 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
           } yield prevBits ++ end
         }
 
-      loop(qdata.getArrayCursor(array), Attempt.successful(BitVector.empty))
+      loop(de.getArrayCursor(array), Attempt.successful(BitVector.empty))
     }
 
     def decoder(bits: BitVector): Attempt[DecodeResult[A]] = {
       @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
       @tailrec
-      def loop(prev: Attempt[DecodeResult[(Option[A], qdata.NascentArray)]])
+      def loop(prev: Attempt[DecodeResult[(Option[A], en.NascentArray)]])
           : Attempt[DecodeResult[A]] =
         prev match {
           // decoding remainder
           case Attempt.Successful(DecodeResult((Some(a), arr), remainder)) =>
             loop(
               codec.decode(remainder)
-                .map(_.map(_ -> qdata.pushArray(a, arr))))
+                .map(_.map(_ -> en.pushArray(a, arr))))
           // decoding completed successfully
           case Attempt.Successful(DecodeResult((None, arr), remainder)) =>
-            Attempt.successful(DecodeResult(qdata.makeArray(arr), remainder))
+            Attempt.successful(DecodeResult(en.makeArray(arr), remainder))
           // decoding failed
           case failure @ Attempt.Failure(_) => failure
         }
 
       loop(
         codec.decode(bits)
-          .map(_.map(_ -> qdata.prepArray)))
+          .map(_.map(_ -> en.prepArray)))
     }
 
     Codec[A](encoder(_), decoder(_))
@@ -214,16 +214,16 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
     def encoder(obj: A): Attempt[BitVector] = {
       @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
       @tailrec
-      def loop(cursor: qdata.ObjectCursor, prev: Attempt[BitVector]): Attempt[BitVector] =
-        if (qdata.hasNextObject(cursor)) {
+      def loop(cursor: de.ObjectCursor, prev: Attempt[BitVector]): Attempt[BitVector] =
+        if (de.hasNextObject(cursor)) {
           val concat: Attempt[BitVector] =
             for {
               prevBits <- prev
               step <- codec.encode(
-                Some(qdata.getObjectKeyAt(cursor) -> qdata.getObjectValueAt(cursor)))
+                Some(de.getObjectKeyAt(cursor) -> de.getObjectValueAt(cursor)))
             } yield prevBits ++ step
 
-          loop(qdata.stepObject(cursor), concat)
+          loop(de.stepObject(cursor), concat)
         } else {
           for {
             prevBits <- prev
@@ -231,30 +231,30 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
           } yield prevBits ++ end
         }
 
-      loop(qdata.getObjectCursor(obj), Attempt.successful(BitVector.empty))
+      loop(de.getObjectCursor(obj), Attempt.successful(BitVector.empty))
     }
 
     def decoder(bits: BitVector): Attempt[DecodeResult[A]] = {
       @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
       @tailrec
-      def loop(prev: Attempt[DecodeResult[(Option[(String, A)], qdata.NascentObject)]])
+      def loop(prev: Attempt[DecodeResult[(Option[(String, A)], en.NascentObject)]])
           : Attempt[DecodeResult[A]] =
         prev match {
           // decoding remainder
           case Attempt.Successful(DecodeResult((Some(key -> value), obj), remainder)) =>
             loop(
               codec.decode(remainder)
-                .map(_.map(_ -> qdata.pushObject(key, value, obj))))
+                .map(_.map(_ -> en.pushObject(key, value, obj))))
           // decoding completed successfully
           case Attempt.Successful(DecodeResult((None, obj), remainder)) =>
-            Attempt.successful(DecodeResult(qdata.makeObject(obj), remainder))
+            Attempt.successful(DecodeResult(en.makeObject(obj), remainder))
           // decoding failed
           case failure @ Attempt.Failure(_) => failure
         }
 
       loop(
         codec.decode(bits)
-          .map(_.map(_ -> qdata.prepObject)))
+          .map(_.map(_ -> en.prepObject)))
     }
 
     Codec[A](encoder(_), decoder(_))
@@ -265,12 +265,12 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
       Codec.lazily(qdataCodec(version) ~ qdataCodec(version))
 
     codec.xmap[A](
-      { case (value, meta) => qdata.makeMeta(value, meta) },
-      a => (qdata.getMetaValue(a), qdata.getMetaMeta(a)))
+      { case (value, meta) => en.makeMeta(value, meta) },
+      a => (de.getMetaValue(a), de.getMetaMeta(a)))
   }
 
   def isType(qType: QType): PartialFunction[A, A] = {
-    case a if qdata.tpe(a) eq qType => a
+    case a if de.tpe(a) eq qType => a
   }
 
   ////
@@ -328,6 +328,6 @@ final class QDataCodec[A](implicit qdata: QData[A]) {
 }
 
 object QDataCodec {
-  def apply[A: QData]: QDataCodec[A] =
+  def apply[A: QDataEncode: QDataDecode]: QDataCodec[A] =
     new QDataCodec[A]
 }

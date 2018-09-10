@@ -66,11 +66,11 @@ object TestData {
     }
   }
 
-  implicit def qdataTestData: QData[TestData] =
-    QDataTestData
+  implicit def qdataEncode: QDataEncode[TestData] = QDataTestData
+  implicit def qdataDecode: QDataDecode[TestData] = QDataTestData
 }
 
-private object QDataTestData extends QData[TestData] {
+private object QDataTestData extends QDataEncode[TestData] with QDataDecode[TestData] {
   import QType._
   import TestData._
 

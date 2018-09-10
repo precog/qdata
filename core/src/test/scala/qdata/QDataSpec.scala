@@ -16,18 +16,15 @@
 
 package qdata
 
-import scalaz.\/
-import slamdata.Predef._
+import org.specs2.ScalaCheck
+import org.specs2.mutable.SpecLike
 
-final class QDataRoundtrip[A: QDataEncode: QDataDecode] {
+object QDataSpec extends SpecLike with ScalaCheck {
+  import TestDataGenerators._
 
-  def roundtripUnsafe(data: A): A = QData.convert[A, A](data)
-
-  def roundtrip(data: A): Option[A] =
-    \/.fromTryCatchNonFatal(roundtripUnsafe(data)).toOption
-}
-
-object QDataRoundtrip {
-  def apply[A: QDataEncode: QDataDecode]: QDataRoundtrip[A] =
-    new QDataRoundtrip[A]
+  "convert" >> {
+    "roundrip the same type" >> prop { data: TestData =>
+      QData.convert[TestData, TestData](data) must_=== data
+    }
+  }
 }
