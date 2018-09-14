@@ -9,6 +9,7 @@ object Dependencies {
   private val scodecVersion     = "1.10.3"
   private val spireVersion      = "0.14.1"
   private val specsVersion      = "4.2.0"
+  private val jawnVersion       = "0.11.1"
 
   def core = Seq(
     "com.slamdata"  %% "slamdata-predef" % predefVersion,
@@ -22,5 +23,10 @@ object Dependencies {
     "org.scalaz"     %% "scalaz-core"       % scalazVersion,
     "org.specs2"     %% "specs2-core"       % specsVersion      % Test,
     "org.specs2"     %% "specs2-scalacheck" % specsVersion      % Test
+  )
+
+  def json = Seq(
+    "org.spire-math" %% "jawn-ast"  % jawnVersion,
+    "org.spire-math" %% "jawn-util" % jawnVersion
   )
 }
