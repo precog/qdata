@@ -59,7 +59,7 @@ object TestDataGenerators {
 
   private def genNested(max: Int): Gen[TestData] = Gen.oneOf[TestData](
     listOfUpTo16(genTestData(max)).map(data => TestData._Array(data.toVector)),
-    listOfUpTo16(Gen.zip(genUnicodeString, genTestData(max))).map(data => TestData._Object(data.toVector)),
+    listOfUpTo16(Gen.zip(genUnicodeString, genTestData(max))).map(data => TestData._Object(data.toMap)),
     Gen.zip(genTestData(max), genTestData(max)) map { case (d1, d2) => TestData._Meta(d1, d2) })
 
   private def listOfUpTo16[A](gen: Gen[A]): Gen[List[A]] =
