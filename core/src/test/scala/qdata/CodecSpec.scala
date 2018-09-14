@@ -16,7 +16,7 @@
 
 package qdata
 
-import slamdata.Predef.Vector
+import slamdata.Predef.{Map, Vector}
 
 import org.specs2.ScalaCheck
 import org.specs2.mutable.SpecLike
@@ -24,7 +24,7 @@ import scodec.{Attempt, DecodeResult, Codec}
 import scodec.bits.BitVector
 import spire.math.Real
 
-object QDataCodecSpec extends SpecLike with ScalaCheck {
+object CodecSpec extends SpecLike with ScalaCheck {
   import TestDataGenerators._
 
   "memoize all the codecs" in {
@@ -79,8 +79,8 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
       QDataCodec[TestData].qdataCodec(Version.Latest)
 
     val dataObject: TestData =
-      TestData._Object(Vector(
-        ("outerKey1", TestData._Object(Vector(
+      TestData._Object(Map(
+        ("outerKey1", TestData._Object(Map(
           ("innerKey1", TestData._Boolean(true)),
           ("innerKey2", TestData._Boolean(false)),
           ("innerKey3", TestData._Null()))))))
@@ -101,7 +101,7 @@ object QDataCodecSpec extends SpecLike with ScalaCheck {
     val codec: Codec[TestData] =
       QDataCodec[TestData].qdataCodec(Version.Latest)
 
-    val data: TestData = TestData._Object(Vector(
+    val data: TestData = TestData._Object(Map(
       ("넼매뉫썾 foobarbaz", TestData._Null())))
 
     roundtrip[TestData](codec, data)

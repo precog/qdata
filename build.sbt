@@ -128,7 +128,7 @@ lazy val root = project
   .settings(noPublishSettings)
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
-  .aggregate(core, time)
+  .aggregate(core, time, json)
   .enablePlugins(AutomateHeaderPlugin)
 
 lazy val core = project
@@ -147,5 +147,15 @@ lazy val time = project
   .settings(commonSettings)
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.time)
+  .settings(excludeTypelevelScalaLibrary)
+  .enablePlugins(AutomateHeaderPlugin)
+
+lazy val json = project
+  .in(file("json"))
+  .settings(name := "qdata-json")
+  .dependsOn(core % BothScopes)
+  .settings(commonSettings)
+  .settings(publishTestsSettings)
+  .settings(libraryDependencies ++= Dependencies.json)
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)

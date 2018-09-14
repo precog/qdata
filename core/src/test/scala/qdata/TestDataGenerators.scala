@@ -26,16 +26,19 @@ object TestDataGenerators {
   implicit val testDataArbitrary: Arbitrary[TestData] =
     Arbitrary(genTestData(6))
 
-  // generates nested data with depth at most `maxDepth` - 1
   def genTestData(maxDepth: Int): Gen[TestData] =
+    genTestDataGen(maxDepth, genNested(genNonNested), genNonNested)
+
+  // generates nested data with depth at most `maxDepth` - 1
+  def genTestDataGen(maxDepth: Int, nested: Int => Gen[TestData], atomic: Gen[TestData])
+      : Gen[TestData] =
     if (maxDepth < 1)
-      genNonNested
+      atomic
     else
-      Gen.oneOf(genNested(maxDepth - 1), genNonNested)
+      Gen.oneOf(nested(maxDepth - 1), atomic)
 
-  ////
-
-  private def genPrimitive: Gen[TestData] = Gen.oneOf[TestData](
+  // generate non-temporal primitives
+  def genPrimitive: Gen[TestData] = Gen.oneOf[TestData](
     Gen.choose(Long.MinValue, Long.MaxValue) map TestData._Long,
     Arbitrary.arbDouble.arbitrary map TestData._Double,
     Arbitrary.arbBigDecimal.arbitrary map (dec => TestData._Real(Real(dec))),
@@ -44,7 +47,8 @@ object TestDataGenerators {
     TestData._Boolean(true),
     TestData._Boolean(false))
 
-  private def genDateTime: Gen[TestData] = Gen.oneOf[TestData](
+  // generate temporal primitives
+  def genDateTime: Gen[TestData] = Gen.oneOf[TestData](
     TimeGenerators.genLocalDateTime map TestData._LocalDateTime,
     TimeGenerators.genLocalDate map TestData._LocalDate,
     TimeGenerators.genLocalTime map TestData._LocalTime,
@@ -53,18 +57,42 @@ object TestDataGenerators {
     TimeGenerators.genOffsetTime map TestData._OffsetTime,
     TimeGenerators.genInterval map TestData._Interval)
 
-  private def genNonNested: Gen[TestData] = Gen.oneOf[TestData](
+  // generate all primitives
+  // there are 7 of each so we choose them equally
+  def genNonNested: Gen[TestData] = Gen.oneOf[TestData](
     genPrimitive,
     genDateTime)
 
-  private def genNested(max: Int): Gen[TestData] = Gen.oneOf[TestData](
-    listOfUpTo16(genTestData(max)).map(data => TestData._Array(data.toVector)),
-    listOfUpTo16(Gen.zip(genUnicodeString, genTestData(max))).map(data => TestData._Object(data.toVector)),
-    Gen.zip(genTestData(max), genTestData(max)) map { case (d1, d2) => TestData._Meta(d1, d2) })
+  // generate objects and arrays
+  def genJson(atomic: Gen[TestData])(max: Int)
+      : Gen[TestData] = {
+    def genNext: Gen[TestData] = genTestDataGen(max, genJson(atomic), atomic)
 
-  private def listOfUpTo16[A](gen: Gen[A]): Gen[List[A]] =
+    Gen.oneOf[TestData](
+      listOfUpTo12(genNext)
+        .map(data => TestData._Array(data.toVector)),
+      listOfUpTo12(Gen.zip(genUnicodeString, genNext))
+        .map(data => TestData._Object(data.toMap)))
+  }
+
+  // generate objects, arrays, and meta (all the recursive types)
+  def genNested(atomic: Gen[TestData])(max: Int): Gen[TestData] = {
+    def genNext: Gen[TestData] = genTestDataGen(max, genNested(atomic), atomic)
+
+    Gen.oneOf[TestData](
+      listOfUpTo12(genNext)
+        .map(data => TestData._Array(data.toVector)),
+      listOfUpTo12(Gen.zip(genUnicodeString, genNext))
+        .map(data => TestData._Object(data.toMap)),
+      Gen.zip(genNext, genNext) map { case (d1, d2) => TestData._Meta(d1, d2) })
+  }
+
+  ////
+
+  // 12 is as big as we can go before the tests start to take too long
+  private def listOfUpTo12[A](gen: Gen[A]): Gen[List[A]] =
     for {
-      n <- Gen.choose(0, 16)
+      n <- Gen.choose(0, 12)
       c <- Gen.listOfN[A](n, gen)
     } yield c
 

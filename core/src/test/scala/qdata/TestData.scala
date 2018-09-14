@@ -51,7 +51,7 @@ object TestData {
   final case class _Interval(value: DateTimeInterval) extends TestData
 
   final case class _Array(value: Vector[TestData]) extends TestData
-  final case class _Object(value: Vector[(String, TestData)]) extends TestData
+  final case class _Object(value: Map[String, TestData]) extends TestData
   final case class _Meta(value: TestData, meta: TestData) extends TestData
 
   ////
@@ -170,35 +170,37 @@ private object QDataTestData extends QDataEncode[TestData] with QDataDecode[Test
   }
   def makeInterval(l: DateTimeInterval): TestData = _Interval(l)
 
-  type NascentArray = Vector[TestData]
-  final case class ArrayCursor(index: Int, values: NascentArray)
+  type ArrayCursor = Vector[TestData]
 
   def getArrayCursor(a: TestData): ArrayCursor = a match {
-    case _Array(v) => ArrayCursor(0, v)
+    case _Array(v) => v
     case data => error(s"found $data, expected Array")
   }
-  def hasNextArray(ac: ArrayCursor): Boolean = ac.values.length > ac.index
-  def getArrayAt(ac: ArrayCursor): TestData = ac.values(ac.index.toInt)
-  def stepArray(ac: ArrayCursor): ArrayCursor = ac.copy(index = ac.index + 1)
+  def hasNextArray(ac: ArrayCursor): Boolean = !ac.isEmpty
+  def getArrayAt(ac: ArrayCursor): TestData = ac.head
+  def stepArray(ac: ArrayCursor): ArrayCursor = ac.tail
+
+  type NascentArray = Vector[TestData]
 
   def prepArray: NascentArray = Vector[TestData]()
-  def pushArray(a: TestData, na: NascentArray): NascentArray = na :+ a // append
-  def makeArray(na: NascentArray): TestData = _Array(na)
+  def pushArray(a: TestData, na: NascentArray): NascentArray = a +: na
+  def makeArray(na: NascentArray): TestData = _Array(na.reverse)
 
-  type NascentObject = Vector[(String, TestData)]
-  final case class ObjectCursor(index: Int, values: NascentObject)
+  type ObjectCursor = List[(String, TestData)]
 
   def getObjectCursor(a: TestData): ObjectCursor = a match {
-    case _Object(v) => ObjectCursor(0, v)
+    case _Object(v) => v.toList
     case data => error(s"found $data, expected Object")
   }
-  def hasNextObject(ac: ObjectCursor): Boolean = ac.values.length > ac.index.toInt
-  def getObjectKeyAt(ac: ObjectCursor): String = ac.values(ac.index.toInt)._1
-  def getObjectValueAt(ac: ObjectCursor): TestData = ac.values(ac.index.toInt)._2
-  def stepObject(ac: ObjectCursor): ObjectCursor = ac.copy(index = ac.index + 1)
+  def hasNextObject(ac: ObjectCursor): Boolean = !ac.isEmpty
+  def getObjectKeyAt(ac: ObjectCursor): String = ac.head._1
+  def getObjectValueAt(ac: ObjectCursor): TestData = ac.head._2
+  def stepObject(ac: ObjectCursor): ObjectCursor = ac.tail
 
-  def prepObject: NascentObject = Vector[(String, TestData)]()
-  def pushObject(key: String, a: TestData, na: NascentObject): NascentObject = na :+ (key -> a) // append
+  type NascentObject = Map[String, TestData]
+
+  def prepObject: NascentObject = Map[String, TestData]()
+  def pushObject(key: String, a: TestData, na: NascentObject): NascentObject = na + ((key, a))
   def makeObject(na: NascentObject): TestData = _Object(na)
 
   def getMetaValue(a: TestData): TestData = a match {
