@@ -10,6 +10,7 @@ object Dependencies {
   private val spireVersion      = "0.14.1"
   private val specsVersion      = "4.2.0"
   private val jawnVersion       = "0.13.0"
+  private val tectonicVersion   = "0.7.0"
 
   def core = Seq(
     "com.slamdata"  %% "slamdata-predef" % predefVersion,
@@ -28,5 +29,9 @@ object Dependencies {
   def json = Seq(
     "org.spire-math" %% "jawn-ast"  % jawnVersion,
     "org.spire-math" %% "jawn-util" % jawnVersion
+  )
+
+  def tectonic = Seq(
+    "com.slamdata" %% "tectonic" % tectonicVersion
   )
 }
