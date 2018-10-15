@@ -20,8 +20,8 @@ import slamdata.Predef._
 import qdata.QDataEncode
 import qdata.time.{DateTimeInterval, OffsetDate}
 
-import jawn.{Facade, FContext}
-import scalaz.{\/, -\/, \/-}
+import jawn.{FContext, Facade, RawFContext}
+import scalaz.{-\/, \/, \/-}
 import scalaz.Scalaz._
 
 import java.time.{
@@ -57,8 +57,8 @@ object QDataPreciseFacade {
 
       def jstring(s: CharSequence): J = facade.jstring(s)
 
-      def singleContext(): FContext[J] = facade.singleContext()
-      def arrayContext(): FContext[J] = facade.arrayContext()
+      def singleContext(): RawFContext[J] = facade.singleContext()
+      def arrayContext(): RawFContext[J] = facade.arrayContext()
 
       def objectContext(): FContext[J] =
         new FContext[J] {
