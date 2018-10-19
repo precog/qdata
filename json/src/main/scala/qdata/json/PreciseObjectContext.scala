@@ -79,5 +79,5 @@ final class PreciseObjectContext[J](implicit qd: QDataEncode[J]) extends FContex
     case \/-(j) => j
   }
 
-  def isObj: Boolean = true
+  val isObj: Boolean = true
 }

@@ -29,15 +29,13 @@ import jawn.FContext
 final class ArrayContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
   private var result: qd.NascentArray = qd.prepArray
 
-  def add(s: CharSequence): Unit = {
+  def add(s: CharSequence): Unit =
     result = qd.pushArray(qd.makeString(s.toString), result)
-  }
 
-  def add(v: J): Unit = {
+  def add(v: J): Unit =
     result = qd.pushArray(v, result)
-  }
 
   def finish: J = qd.makeArray(result)
 
-  def isObj: Boolean = false
+  val isObj: Boolean = false
 }
