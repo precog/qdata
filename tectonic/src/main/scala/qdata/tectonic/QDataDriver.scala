@@ -49,6 +49,11 @@ final class QDataDriver[A] private (plate: Plate[A]) {
       plate.unnest()
     }
 
+    def expIndex(s: String): Int = {
+      val e = s.indexOf('e')
+      if (e < 0) s.indexOf('E') else e
+    }
+
     def drive(d: D): Signal =
       D.tpe(d) match {
         case QLong =>
@@ -56,11 +61,11 @@ final class QDataDriver[A] private (plate: Plate[A]) {
 
         case QDouble =>
           val s = D.getDouble(d).toString
-          plate.num(s, s.indexOf('.'), s.indexOf('E'))
+          plate.num(s, s.indexOf('.'), expIndex(s))
 
         case QReal =>
           val s = D.getReal(d).getString(Int.MaxValue)
-          plate.num(s, s.indexOf('.'), s.indexOf('E'))
+          plate.num(s, s.indexOf('.'), expIndex(s))
 
         case QString =>
           plate.str(D.getString(d))
