@@ -16,7 +16,7 @@
 
 package qdata.tectonic
 
-import slamdata.Predef.{Array, Int, String, SuppressWarnings, Throwable}
+import slamdata.Predef.{Array, Int, String, SuppressWarnings}
 
 import qdata.{QDataDecode, QType}
 import qdata.json.PreciseKeys
@@ -41,7 +41,7 @@ final class QDataDriver[A] private (plate: Plate[A]) {
   def consume[F[_], D](
       input: F[D])(
       implicit F: Foldable[F], D: QDataDecode[D])
-      : Either[Throwable, A] = {
+      : Either[DriverException, A] = {
 
     def drivePreciseValue(k: String, v: String): Signal  = {
       plate.nestMap(k)
@@ -152,15 +152,15 @@ final class QDataDriver[A] private (plate: Plate[A]) {
 
         Right(plate.finishBatch(false))
       } catch {
-        case NonFatal(t) => Left(t)
+        case NonFatal(t) => Left(new DriverException(t))
       }
   }
 
-  def finish(): Either[Throwable, A] =
+  def finish(): Either[DriverException, A] =
     try {
       Right(plate.finishBatch(true))
     } catch {
-        case NonFatal(t) => Left(t)
+        case NonFatal(t) => Left(new DriverException(t))
     }
 }
 
