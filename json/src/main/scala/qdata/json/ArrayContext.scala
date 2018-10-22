@@ -16,24 +16,26 @@
 
 package qdata.json
 
-import slamdata.Predef.{Set, String}
+import slamdata.Predef._
+import qdata.QDataEncode
 
-object PreciseKeys {
-  val LocalDateTimeKey = "$localdatetime"
-  val LocalDateKey = "$localdate"
-  val LocalTimeKey = "$localtime"
-  val OffsetDateTimeKey = "$offsetdatetime"
-  val OffsetDateKey = "$offsetdate"
-  val OffsetTimeKey = "$offsettime"
-  val IntervalKey = "$interval"
+import java.lang.CharSequence
 
-  val All: Set[String] =
-    Set(
-      LocalDateTimeKey,
-      LocalDateKey,
-      LocalTimeKey,
-      OffsetDateTimeKey,
-      OffsetDateKey,
-      OffsetTimeKey,
-      IntervalKey)
+import jawn.FContext
+
+@SuppressWarnings(Array(
+  "org.wartremover.warts.ToString",
+  "org.wartremover.warts.Var"))
+final class ArrayContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+  private var result: qd.NascentArray = qd.prepArray
+
+  def add(s: CharSequence): Unit =
+    result = qd.pushArray(qd.makeString(s.toString), result)
+
+  def add(v: J): Unit =
+    result = qd.pushArray(v, result)
+
+  def finish: J = qd.makeArray(result)
+
+  val isObj: Boolean = false
 }

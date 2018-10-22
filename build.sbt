@@ -128,7 +128,7 @@ lazy val root = project
   .settings(noPublishSettings)
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
-  .aggregate(core, time, json)
+  .aggregate(core, time, json, tectonic)
   .enablePlugins(AutomateHeaderPlugin)
 
 lazy val core = project
@@ -157,5 +157,15 @@ lazy val json = project
   .settings(commonSettings)
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.json)
+  .settings(excludeTypelevelScalaLibrary)
+  .enablePlugins(AutomateHeaderPlugin)
+
+lazy val tectonic = project
+  .in(file("tectonic"))
+  .settings(name := "qdata-tectonic")
+  .dependsOn(json, core % "test->test")
+  .settings(commonSettings)
+  .settings(publishTestsSettings)
+  .settings(libraryDependencies ++= Dependencies.tectonic)
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)

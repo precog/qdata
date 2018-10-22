@@ -30,7 +30,7 @@ object QDataFacadeSpec extends SpecLike with ScalaCheck {
   import TestDataGenerators.{genTestDataGen, genJson, genPrimitive}
 
   def parser[J: QDataEncode]: SupportParser[J] = new SupportParser[J] {
-    implicit def facade: Facade[J] = QDataFacade.qdata[J]
+    implicit def facade: Facade[J] = QDataFacade[J](isPrecise = false)
   }
 
   implicit def arbTestData: Arbitrary[TestData] = Arbitrary(

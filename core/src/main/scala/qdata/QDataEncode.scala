@@ -27,7 +27,7 @@ import java.time.{
   LocalDateTime,
   LocalTime,
   OffsetDateTime,
-  OffsetTime,
+  OffsetTime
 }
 
 trait QDataEncode[A] {

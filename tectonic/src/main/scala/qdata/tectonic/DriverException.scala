@@ -14,26 +14,9 @@
  * limitations under the License.
  */
 
-package qdata.json
+package qdata.tectonic
 
-import slamdata.Predef.{Set, String}
+import slamdata.Predef.{Exception, Throwable}
 
-object PreciseKeys {
-  val LocalDateTimeKey = "$localdatetime"
-  val LocalDateKey = "$localdate"
-  val LocalTimeKey = "$localtime"
-  val OffsetDateTimeKey = "$offsetdatetime"
-  val OffsetDateKey = "$offsetdate"
-  val OffsetTimeKey = "$offsettime"
-  val IntervalKey = "$interval"
-
-  val All: Set[String] =
-    Set(
-      LocalDateTimeKey,
-      LocalDateKey,
-      LocalTimeKey,
-      OffsetDateTimeKey,
-      OffsetDateKey,
-      OffsetTimeKey,
-      IntervalKey)
-}
+/** Raised while driving a `Plate` via QData. */
+final class DriverException(cause: Throwable) extends Exception(cause)
