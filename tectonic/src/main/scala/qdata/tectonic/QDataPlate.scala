@@ -17,6 +17,9 @@
 package qdata.tectonic
 
 import slamdata.Predef._
+
+import cats.effect.Sync
+
 import qdata.QDataEncode
 import qdata.json.{NumericParser, PreciseParser}
 
@@ -309,6 +312,6 @@ final class QDataPlate[A, R] private (
 }
 
 object QDataPlate {
-  def apply[A: QDataEncode, R](isPrecise: Boolean)(implicit cbf: CanBuildFrom[Nothing, A, R]): Plate[R] =
-    new QDataPlate[A, R](isPrecise)
+  def apply[F[_]: Sync, A: QDataEncode, R](isPrecise: Boolean)(implicit cbf: CanBuildFrom[Nothing, A, R]): F[Plate[R]] =
+    Sync[F].delay(new QDataPlate[A, R](isPrecise))
 }
