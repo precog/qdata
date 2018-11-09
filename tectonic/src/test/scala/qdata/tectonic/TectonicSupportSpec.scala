@@ -17,6 +17,9 @@
 package qdata.tectonic
 
 import slamdata.Predef.{Int, List, Map}
+
+import cats.effect.IO
+
 import qdata.{TestData, TestDataGenerators}
 
 import scala.Predef.$conforms
@@ -66,7 +69,8 @@ object TectonicSupportSpec extends SpecLike with ScalaCheck {
     val normalized = input map normalize
     val batchSize = max(1, abs(seed % 20))
 
-    val driver = QDataDriver(QDataPlate[TestData, List[TestData]](isPrecise = true))
+    val plate = QDataPlate[IO, TestData, List[TestData]](isPrecise = true).unsafeRunSync()      // 💪
+    val driver = QDataDriver(plate)
 
     val results =
       normalized
