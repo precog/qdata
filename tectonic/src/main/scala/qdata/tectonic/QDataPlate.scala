@@ -259,6 +259,8 @@ final class QDataPlate[A, R] private (
     r
   }
 
+  def skipped(bytes: Int): Unit = ()
+
   ////
 
   @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
