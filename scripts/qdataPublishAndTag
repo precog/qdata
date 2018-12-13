@@ -11,6 +11,6 @@ TRAVIS_JOB_NUMBER=1 scripts/publishAndTag 'slamdata/qdata'
 bumpInDownstream() { echo $1 > qdata-version; }
 export -f bumpInDownstream
 
-for c in quasar quasar-repl; do
+for c in quasar quasar-repl mimir; do
   scripts/bumpDependentProject slamdata $c bumpInDownstream
 done
