@@ -30,6 +30,9 @@ env:
     # DISCORD_WEBHOOK_TOKENS
     - secure: "0xUWVdSEIVTOXJuToo4BTrZhqrgc3jVuRvTufIkR/gKbMxxx9H5m+23WdPYHNRlxPO/z+6Himy6WQv27cERk8wS2qwuIesMZ9fiyA+dUYS/sjxnSNSp3GGz4qLQaeggkSd6meznWQNC7216u7WJZ6xyp7C7TWaHfpWyrLIDxue8MUhE5904nAQpUJGCRfRKdoy4zfS8YUkEh4ja7wIRLyLEP6Wv3twa0g7ExHBnw5Melj3uQIl/J4M71XMH+jHlHvac4KWNnh9Pfph44Hpq1n8Vmy6iNoRx2Y5YWxfe6gXFVRSDG+Xg2cZ3HJ/8qimobF+9vjwSq8vugVpqM7cA6Ikk+y94k+6cGPBkvK6/FTqOQUbsYNG0tmGgnWCO47/5Ue6QtB9Ygx5IersJCPtYhMLuGk9e9j37Gms3+W1uwEm2QnJ577zzrxgGg5+VCjY5BtMjK3NZ2q8rLy8VB7gXjkIz32QvBfU8ejyjv15BnD3TFBn/eY5oiiEHARR8F/XTDc8+kMpYK+UFA1p47kc2dIAuESS4ZNpGvCJMgEdn3fo3WQP2zt3BiDLtaFEByr26PLe4CaktSoJWRsXXwbiFD/0HoYUbEw04NXpMEVhpyCnj9BIGe+EtjLzF0/opgafiDBbGXhmaYQ6dsQ8iIocuELb6Z6mLgsFzHNKGhOSlu1wI="
 
+install:
+  - gem install octokit
+
 jobs:
   include:
     - stage: test
@@ -47,6 +50,17 @@ jobs:
         depth: false
 
 after_success:
+  - |
+    if [ $TRAVIS_PULL_REQUEST != "false" ] && [ $TRAVIS_PULL_REQUEST_BRANCH =~ '.*version-bump.*' ]; then
+      for t in $(scripts/listTags | grep 'version: revision'); do
+        cd /tmp
+        git clone --depth 1 git@github.com:slamdata/devtools.git
+        cd -
+
+        /tmp/devtools/bin/sdmerge $TRAVIS_PULL_REQUEST
+      done
+    fi
+
   - scripts/discordTravisPost success https://discordapp.com/api/webhooks/$DISCORD_WEBHOOK_TOKENS
 
 after_failure:
