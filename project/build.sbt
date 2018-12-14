@@ -2,8 +2,6 @@ libraryDependencies += "org.kohsuke" % "github-api" % "1.59" exclude("org.jenkin
 
 disablePlugins(TravisCiPlugin)
 
-scalacOptions ++= scalacOptions_2_12
-
 scalacOptions --= Seq(
   "-Ywarn-unused:imports",
   "-Yinduction-heuristics",
