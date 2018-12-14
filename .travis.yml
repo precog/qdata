@@ -56,7 +56,7 @@ after_success:
       git clone --depth 1 https://$GITHUB_TOKEN@github.com/slamdata/devtools.git $clone_dir
 
       for t in "$(scripts/listLabels | grep 'version: revision')"; do
-        $clone_dir/bin/sdmerge $TRAVIS_PULL_REQUEST
+        $clone_dir/bin/sdmerge $TRAVIS_REPO_SLUG $TRAVIS_PULL_REQUEST
       done
     fi
 
