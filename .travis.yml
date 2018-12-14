@@ -52,12 +52,11 @@ jobs:
 after_success:
   - |
     if [ $TRAVIS_PULL_REQUEST != "false" ] && [[ $TRAVIS_PULL_REQUEST_BRANCH =~ 'version-bump' ]]; then
-      cd /tmp
-      git clone --depth 1 git@github.com:slamdata/devtools.git
-      cd -
+      clone_dir=$(mktemp -d "/tmp/slamdata-bump.XXXXXXXX")
+      git clone --depth 1 https://$GITHUB_TOKEN@github.com/slamdata/devtools.git $clone_dir
 
       for t in "$(scripts/listLabels | grep 'version: revision')"; do
-        /tmp/devtools/bin/sdmerge $TRAVIS_PULL_REQUEST
+        $clone_dir/bin/sdmerge $TRAVIS_PULL_REQUEST
       done
     fi
 
