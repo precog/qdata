@@ -52,7 +52,7 @@ jobs:
 after_success:
   - |
     if [ $TRAVIS_PULL_REQUEST != "false" ] && [ $TRAVIS_PULL_REQUEST_BRANCH =~ '.*version-bump.*' ]; then
-      for t in $(scripts/listTags | grep 'version: revision'); do
+      for t in $(scripts/listLabels | grep 'version: revision'); do
         cd /tmp
         git clone --depth 1 git@github.com:slamdata/devtools.git
         cd -
