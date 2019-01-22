@@ -19,7 +19,7 @@ package qdata.json
 import slamdata.Predef._
 import qdata.QDataEncode
 
-import jawn.{Facade, FContext}
+import org.typelevel.jawn.{Facade, FContext}
 
 import java.lang.CharSequence
 

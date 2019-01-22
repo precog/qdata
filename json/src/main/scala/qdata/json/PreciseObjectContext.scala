@@ -21,7 +21,7 @@ import qdata.QDataEncode
 
 import java.lang.CharSequence
 
-import jawn.FContext
+import org.typelevel.jawn.FContext
 import scalaz.{\/, -\/, \/-}
 import scalaz.syntax.either._
 

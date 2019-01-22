@@ -21,7 +21,7 @@ import qdata.QDataEncode
 
 import java.lang.CharSequence
 
-import jawn.FContext
+import org.typelevel.jawn.FContext
 
 @SuppressWarnings(Array(
   "org.wartremover.warts.ToString",

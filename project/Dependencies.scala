@@ -7,9 +7,9 @@ object Dependencies {
   private val scalazVersion     = "7.2.23"
   private val scalacheckVersion = "1.14.0"
   private val scodecVersion     = "1.10.3"
-  private val spireVersion      = "0.14.1"
+  private val spireVersion      = "0.16.0"
   private val specsVersion      = "4.2.0"
-  private val jawnVersion       = "0.13.0"
+  private val jawnVersion       = "0.14.1"
   private val tectonicVersion   = IO.read(file("./tectonic-version")).trim
 
   def core = Seq(
@@ -27,8 +27,8 @@ object Dependencies {
   )
 
   def json = Seq(
-    "org.spire-math" %% "jawn-ast"  % jawnVersion,
-    "org.spire-math" %% "jawn-util" % jawnVersion
+    "org.typelevel" %% "jawn-ast"  % jawnVersion,
+    "org.typelevel" %% "jawn-util" % jawnVersion
   )
 
   def tectonic = Seq(

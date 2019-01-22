@@ -19,10 +19,10 @@ package qdata.json
 import slamdata.Predef._
 import qdata.{QDataEncode, TestData, TestDataGenerators}
 
-import jawn.{Facade, SupportParser}
 import org.scalacheck.Arbitrary
 import org.specs2.ScalaCheck
 import org.specs2.mutable.SpecLike
+import org.typelevel.jawn.{Facade, SupportParser}
 import scalaz.syntax.std.option._
 
 object QDataFacadeSpec extends SpecLike with ScalaCheck {

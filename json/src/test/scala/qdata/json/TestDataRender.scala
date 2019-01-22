@@ -21,7 +21,7 @@ import qdata.TestData
 import scala.collection.mutable
 import scala.sys.error
 
-import jawn.ast._
+import org.typelevel.jawn.ast._
 import scalaz.std.tuple._
 import scalaz.syntax.functor._
 import spire.math.Real.algebra
