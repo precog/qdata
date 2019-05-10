@@ -3,7 +3,7 @@ package qdata.project
 import sbt._
 
 object Dependencies {
-  private val predefVersion     = "0.0.4"
+  private val predefVersion     = "0.0.7"
   private val scalazVersion     = "7.2.23"
   private val scalacheckVersion = "1.14.0"
   private val scodecVersion     = "1.10.3"
