@@ -6,7 +6,7 @@ object Dependencies {
   private val predefVersion     = "0.0.7"
   private val scalazVersion     = "7.2.27"
   private val scalacheckVersion = "1.14.0"
-  private val scodecVersion     = "1.11.3"
+  private val scodecVersion     = "1.11.4"
   private val spireVersion      = "0.16.2"
   private val specsVersion      = "4.5.1"
   private val jawnVersion       = "0.14.2"
