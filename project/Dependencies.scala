@@ -4,7 +4,7 @@ import sbt._
 
 object Dependencies {
   private val predefVersion     = "0.0.7"
-  private val scalazVersion     = "7.2.27"
+  private val scalazVersion     = "7.2.28"
   private val scalacheckVersion = "1.14.0"
   private val scodecVersion     = "1.11.4"
   private val spireVersion      = "0.16.2"
