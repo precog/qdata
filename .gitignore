@@ -11,6 +11,7 @@ tags
 /scripts/discordTravisPost
 /scripts/isRevision
 /scripts/listLabels
+/scripts/closePR
 /pgppassphrase.sbt.enc
 /scripts/publishAndTag
 /pubring.pgp.enc
