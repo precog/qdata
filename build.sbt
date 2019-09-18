@@ -34,15 +34,6 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
 
   // NB: -Xlint triggers issues that need to be fixed
   scalacOptions --= Seq("-Xlint"),
-  // NB: Some warts are disabled in specific projects. Here’s why:
-  //   • AsInstanceOf   – wartremover/wartremover#266
-  //   • others         – simply need to be reviewed & fixed
-  wartremoverWarnings in (Compile, compile) --= Seq(
-    Wart.Any,                   // - see wartremover/wartremover#263
-    Wart.PublicInference,       // - creates many compile errors when enabled - needs to be enabled incrementally
-    Wart.ImplicitParameter,     // - creates many compile errors when enabled - needs to be enabled incrementally
-    Wart.ImplicitConversion,    // - see mpilquist/simulacrum#35
-    Wart.Nothing),              // - see wartremover/wartremover#263
 
   logBuffered in Test := isTravisBuild.value,
 
