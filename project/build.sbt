@@ -1,4 +1,4 @@
-libraryDependencies += "org.kohsuke" % "github-api" % "1.95" exclude("org.jenkins-ci", "annotation-indexer")
+libraryDependencies += "org.kohsuke" % "github-api" % "1.99" exclude("org.jenkins-ci", "annotation-indexer")
 
 disablePlugins(TravisCiPlugin)
 
