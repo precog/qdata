@@ -9,7 +9,7 @@ object Dependencies {
   private val scodecVersion     = "1.11.4"
   private val spireVersion      = "0.16.2"
   private val specsVersion      = "4.8.1"
-  private val jawnVersion       = "0.14.2"
+  private val jawnVersion       = "0.14.3"
   private val tectonicVersion   = IO.read(file("./tectonic-version")).trim
 
   def core = Seq(
