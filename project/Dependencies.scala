@@ -4,12 +4,12 @@ import sbt._
 
 object Dependencies {
   private val predefVersion     = "0.0.7"
-  private val scalazVersion     = "7.2.29"
+  private val scalazVersion     = "7.2.30"
   private val scalacheckVersion = "1.14.3"
   private val scodecVersion     = "1.11.4"
   private val spireVersion      = "0.16.2"
   private val specsVersion      = "4.8.1"
-  private val jawnVersion       = "0.14.2"
+  private val jawnVersion       = "0.14.3"
   private val tectonicVersion   = IO.read(file("./tectonic-version")).trim
 
   def core = Seq(
