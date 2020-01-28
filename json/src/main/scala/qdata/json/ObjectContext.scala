@@ -28,7 +28,7 @@ import org.typelevel.jawn.FContext
   "org.wartremover.warts.Null",
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
-final class ObjectContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+final class ObjectContext[J](implicit qd: QDataEncode[J]) extends FContext.NoIndexFContext[J] {
   private var result: qd.NascentObject = qd.prepObject
   private var key: String = null
 

@@ -32,7 +32,7 @@ import scalaz.syntax.either._
   "org.wartremover.warts.Null",
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
-final class PreciseObjectContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+final class PreciseObjectContext[J](implicit qd: QDataEncode[J]) extends FContext.NoIndexFContext[J] {
 
   private val preciseParser: PreciseParser[J] = PreciseParser[J]
   private var result: qd.NascentObject \/ J = qd.prepObject.left[J]
