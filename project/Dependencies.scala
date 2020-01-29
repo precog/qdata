@@ -8,7 +8,7 @@ object Dependencies {
   private val scalacheckVersion = "1.14.3"
   private val scodecVersion     = "1.11.4"
   private val spireVersion      = "0.16.2"
-  private val specsVersion      = "4.8.1"
+  private val specsVersion      = "4.8.3"
   private val jawnVersion       = "1.0.0"
   private val tectonicVersion   = IO.read(file("./tectonic-version")).trim
 
