@@ -1,14 +1,13 @@
 language: scala
-scala: 2.12.10
+
+scala:
+  - 2.13.1
+  - 2.12.10
+
 jdk: openjdk8
 
 dist: trusty
 sudo: required
-
-stages:
-  - name: test
-  - name: publish
-    if: NOT type = pull_request
 
 cache:
   directories:
@@ -34,24 +33,20 @@ install:
   - $SBT transferCommonResources
   - scripts/commonSetup
 
-jobs:
-  include:
-    - stage: test
-      script:
-        - set -e
-        - $SBT ++$TRAVIS_SCALA_VERSION test
+script:
+  - set -e
+  - $SBT ++$TRAVIS_SCALA_VERSION test
 
-    - stage: publish
-      env:
-      script:
-        - set -e
-        - scripts/qdataPublishAndTag
+  - |-
+    if [[ "$TRAVIS_SCALA_VERSION" =~ 2.12 ]]; then
+      if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_BRANCH" =~ backport/v.*|master ]]; then
+        TRAVIS_JOB_NUMBER=1 scripts/qdataPublishAndTag
+      fi
 
-      git:
-        depth: false
+      scripts/checkAndAutoMerge
+    fi
 
 after_success:
-  - scripts/checkAndAutoMerge
   - scripts/discordTravisPost success https://discordapp.com/api/webhooks/$DISCORD_WEBHOOK_TOKENS
 
 after_failure:
