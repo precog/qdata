@@ -29,14 +29,14 @@ import java.lang.CharSequence
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
 final class QDataFacade[J] private (isPrecise: Boolean)(implicit qd: QDataEncode[J])
-    extends Facade[J] {
+    extends Facade.NoIndexFacade[J] {
 
   private val numericParser: NumericParser[J] = NumericParser[J]
 
-  def jnull(): J = qd.makeNull
+  def jnull: J = qd.makeNull
 
-  def jfalse(): J = qd.makeBoolean(false)
-  def jtrue(): J = qd.makeBoolean(true)
+  def jfalse: J = qd.makeBoolean(false)
+  def jtrue: J = qd.makeBoolean(true)
 
   def jnum(s: CharSequence, decIndex: Int, expIndex: Int): J =
     numericParser.parseNumber(s.toString, decIndex, expIndex)
@@ -44,7 +44,7 @@ final class QDataFacade[J] private (isPrecise: Boolean)(implicit qd: QDataEncode
   def jstring(s: CharSequence): J = qd.makeString(s.toString)
 
   def singleContext(): FContext[J] =
-    new FContext[J] {
+    new FContext.NoIndexFContext[J] {
       var result: J = _
 
       def add(s: CharSequence): Unit = { result = jstring(s) }
