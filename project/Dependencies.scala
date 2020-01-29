@@ -3,12 +3,12 @@ package qdata.project
 import sbt._
 
 object Dependencies {
-  private val predefVersion     = "0.0.7"
+  private val predefVersion     = "0.1.0"
   private val scalazVersion     = "7.2.30"
   private val scalacheckVersion = "1.14.3"
   private val scodecVersion     = "1.11.4"
-  private val spireVersion      = "0.16.2"
-  private val specsVersion      = "4.8.3"
+  private val spireVersion      = "0.17.0-M1"
+  private val specsVersion      = "4.8.1"
   private val jawnVersion       = "1.0.0"
   private val tectonicVersion   = IO.read(file("./tectonic-version")).trim
 
@@ -32,6 +32,7 @@ object Dependencies {
   )
 
   def tectonic = Seq(
-    "com.slamdata" %% "tectonic" % tectonicVersion
+    "com.slamdata"           %% "tectonic"                % tectonicVersion,
+    "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.3"
   )
 }

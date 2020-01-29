@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2019 SlamData Inc.
+ * Copyright 2014–2020 SlamData Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,8 +120,11 @@ object CodecSpec extends SpecLike with ScalaCheck {
   def roundtrip[A](codec: Codec[A], value: A) = {
     val encoded = codec.encode(value)
     encoded.isSuccessful must_=== true
-    val Attempt.Successful(DecodeResult(decoded, remainder)) = codec.decode(encoded.require)
-    remainder must_=== BitVector.empty
-    decoded must_=== value
+
+    codec.decode(encoded.require) must beLike {
+      case Attempt.Successful(DecodeResult(decoded, remainder)) =>
+        remainder must_=== BitVector.empty
+        decoded must_=== value
+    }
   }
 }

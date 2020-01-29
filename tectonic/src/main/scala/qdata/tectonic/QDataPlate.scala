@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2019 SlamData Inc.
+ * Copyright 2014–2020 SlamData Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import qdata.json.{NumericParser, PreciseParser}
 
 import java.lang.CharSequence
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.compat._
 import scala.collection.mutable.Builder
 import scala.sys.error
 
@@ -37,7 +37,7 @@ import tectonic.{Plate, Signal}
   "org.wartremover.warts.Var"))
 final class QDataPlate[A, R] private (
     isPrecise: Boolean)(
-    implicit A: QDataEncode[A], cbf: CanBuildFrom[Nothing, A, R])
+    implicit A: QDataEncode[A], cbf: Factory[A, R])
     extends Plate[R] {
 
   private final class ArrCtx() {
@@ -96,7 +96,7 @@ final class QDataPlate[A, R] private (
 
   private val numericParser: NumericParser[A] = NumericParser[A]
   private val preciseParser: PreciseParser[A] = PreciseParser[A]
-  private var builder: Builder[A, R] = cbf()
+  private var builder: Builder[A, R] = cbf.newBuilder
   private var cursor: List[CNode] = Nil
 
   def nul(): Signal = {
@@ -224,7 +224,8 @@ final class QDataPlate[A, R] private (
   @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def finishRow(): Unit =
     if (cursor.nonEmpty) {
-      val h :: t = cursor
+      val h = cursor.head
+      val t = cursor.tail
 
       if (t.isEmpty) {
         val (node, meta) = h.unMeta
@@ -254,7 +255,7 @@ final class QDataPlate[A, R] private (
   def finishBatch(terminal: Boolean): R = {
     val r = builder.result
 
-    builder = cbf()
+    builder = cbf.newBuilder
 
     r
   }
@@ -314,6 +315,6 @@ final class QDataPlate[A, R] private (
 }
 
 object QDataPlate {
-  def apply[F[_]: Sync, A: QDataEncode, R](isPrecise: Boolean)(implicit cbf: CanBuildFrom[Nothing, A, R]): F[Plate[R]] =
+  def apply[F[_]: Sync, A: QDataEncode, R](isPrecise: Boolean)(implicit cbf: Factory[A, R]): F[Plate[R]] =
     Sync[F].delay(new QDataPlate[A, R](isPrecise))
 }
