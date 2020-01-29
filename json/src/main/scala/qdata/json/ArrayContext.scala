@@ -26,7 +26,7 @@ import org.typelevel.jawn.FContext
 @SuppressWarnings(Array(
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
-final class ArrayContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+final class ArrayContext[J](implicit qd: QDataEncode[J]) extends FContext.NoIndexFContext[J] {
   private var result: qd.NascentArray = qd.prepArray
 
   def add(s: CharSequence): Unit =
