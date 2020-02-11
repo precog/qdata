@@ -33,6 +33,6 @@ object Dependencies {
 
   def tectonic = Seq(
     "com.slamdata"           %% "tectonic"                % tectonicVersion,
-    "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.3"
+    "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.4"
   )
 }
