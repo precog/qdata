@@ -12,6 +12,9 @@ import sbt.std.Transform.DummyTaskMap
 import sbt.TestFrameworks.Specs2
 import sbtrelease._, ReleaseStateTransformations._, Utilities._
 
+ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
+ThisBuild / scalaVersion := "2.12.10"
+
 val BothScopes = "test->test;compile->compile"
 
 lazy val buildSettings = commonBuildSettings ++ Seq(

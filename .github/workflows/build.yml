@@ -6,6 +6,13 @@ on:
   push:
     branches: [master]
 
+env:
+  SBT: ./sbt
+  JDK: 1.8
+  GRAAL: '19.3.1.java8'
+  REPO_SLUG: ${{ github.repository }}
+  ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+
 jobs:
   build:
     name: Java Build
@@ -17,15 +24,14 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+      - name: Set up JDK ${{ env.JDK }}
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: ${{ evn.JDK }}
       - name: Setup Git Actor
         run: git config github.actor slamdata-bot
       - name: Compile and test
-        run: |
-          ./sbt -DisIsolatedEnv=${ISOLATED_ENV:=false} ++${{ matrix.scala }} checkHeaders test:compile test "testOnly -- failtrace"
+        run: $SBT ++${{ matrix.scala }} ci
       - name: Upload target
         uses: actions/upload-artifact@v1
         with:
@@ -45,11 +51,11 @@ jobs:
       - name: Install Graal
         uses: DeLaGuardo/setup-graalvm@2.0
         with:
-          graalvm-version: '19.3.1.java8'
+          graalvm-version: ${{ env.GRAAL }}
       - name: Setup Git Actor
         run: git config github.actor slamdata-bot
       - name: Compile and test
-        run: ./sbt -DisIsolatedEnv=${ISOLATED_ENV:=false} ++${{ matrix.scala }} checkHeaders test:compile test "testOnly -- failtrace"
+        run: ./sbt ++${{ matrix.scala }} ci
       - name: Upload target
         uses: actions/upload-artifact@v1
         with:
@@ -99,7 +105,6 @@ jobs:
           echo ::set-env name=VERSIONS::$(git diff HEAD^1 | grep -e '^[-+][0-9]' | sed 's/^[+\-]//' | sed 's/\.[0-9]*$//' | uniq | wc -l)
           echo ::set-env name=CLONE_DIR::$(mktemp -d "/tmp/slamdata-bump.XXXXXXXX")
           echo ::set-env name=IS_REVISION_LABEL::${{ contains(github.event.pull_request.labels.*.name, 'revision') }}
-          echo ::set-env name=REPO_SLUG::${{ github.repository }}
           echo ::set-env name=PR_NUMBER::$(echo "$GITHUB_REF" | cut -d'/' -f3)
       - name: Run automerge
         run: ./scripts/core/checkAndAutoMerge
