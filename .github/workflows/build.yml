@@ -27,7 +27,7 @@ jobs:
       - name: Set up JDK ${{ env.JDK }}
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ evn.JDK }}
+          java-version: ${{ env.JDK }}
       - name: Setup Git Actor
         run: git config github.actor slamdata-bot
       - name: Compile and test
