@@ -77,6 +77,10 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: target-jdk-${{ matrix.scala }}
+      - name: Transfer Common Resources
+        run: $SBT transferCommonResources
+      - name: Export common secrets
+        run: $SBT exportSecretsForActions
       - name: Publish Tag
         run: ./scripts/qdataPublishAndTag
 
@@ -92,14 +96,16 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: target-jdk-${{ matrix.scala }}
-      - name: Setup Git Actor
-        run: git config github.actor slamdata-bot
-      - name: Install common resources
-        run: ./sbt transferCommonResources
       - name: Install ruby
         uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
+      - name: Setup Git Actor
+        run: git config github.actor slamdata-bot
+      - name: Install common resources
+        run: ./sbt transferCommonResources
+      - name: Export common secrets
+        run: $SBT exportSecretsForActions
       - name: Set env vars
         run: |
           echo ::set-env name=VERSIONS::$(git diff HEAD^1 | grep -e '^[-+][0-9]' | sed 's/^[+\-]//' | sed 's/\.[0-9]*$//' | uniq | wc -l)
