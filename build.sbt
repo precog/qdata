@@ -10,7 +10,9 @@ import scala.collection.immutable.Map
 import sbt._, Keys._
 import sbt.std.Transform.DummyTaskMap
 import sbt.TestFrameworks.Specs2
-import sbtrelease._, ReleaseStateTransformations._, Utilities._
+
+ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
+ThisBuild / scalaVersion := "2.12.10"
 
 val BothScopes = "test->test;compile->compile"
 
@@ -35,7 +37,7 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
   // NB: -Xlint triggers issues that need to be fixed
   scalacOptions --= Seq("-Xlint"),
 
-  logBuffered in Test := isTravisBuild.value,
+  logBuffered in Test := githubIsWorkflowBuild.value,
 
   console := { (console in Test).value }) // console alias test:console
 
@@ -43,7 +45,7 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
 // actually available to run.
 concurrentRestrictions in Global := {
   val maxTasks = 2
-  if (isTravisBuild.value)
+  if (githubIsWorkflowBuild.value)
     // Recreate the default rules with the task limit hard-coded:
     Seq(Tags.limitAll(maxTasks), Tags.limit(Tags.ForkedTestGroup, 1))
   else
@@ -55,36 +57,11 @@ version in ThisBuild := {
   import scala.sys.process._
 
   val currentVersion = (version in ThisBuild).value
-  if (!isTravisBuild.value)
+  if (!githubIsWorkflowBuild.value)
     currentVersion + "-" + "git rev-parse HEAD".!!.substring(0, 7)
   else
     currentVersion
 }
-
-useGpg in Global := {
-  val oldValue = (useGpg in Global).value
-  !isTravisBuild.value || oldValue
-}
-
-pgpSecretRing in Global := pgpPublicRing.value   // workaround for sbt/sbt-pgp#126
-
-lazy val publishSettings = commonPublishSettings ++ Seq(
-  performMavenCentralSync := false,   // basically just ignores all the sonatype sync parts of things
-  publishAsOSSProject := true,
-  organizationName := "SlamData Inc.",
-  organizationHomepage := Some(url("http://slamdata.com")),
-  homepage := Some(url("https://github.com/slamdata/qdata")),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/slamdata/qdata"),
-      "scm:git@github.com:slamdata/qdata.git")),
-  bintrayCredentialsFile := {
-    val oldValue = bintrayCredentialsFile.value
-    if (!isTravisBuild.value)
-      Path.userHome / ".bintray" / ".credentials"
-    else
-      oldValue
-  })
 
 lazy val assemblySettings = Seq(
   test in assembly := {},
@@ -103,7 +80,7 @@ lazy val assemblySettings = Seq(
 )
 
 // Build and publish a project, excluding its tests.
-lazy val commonSettings = buildSettings ++ publishSettings ++ assemblySettings
+lazy val commonSettings = buildSettings ++ assemblySettings
 
 // not doing this causes NoSuchMethodErrors when using coursier
 lazy val excludeTypelevelScalaLibrary =
