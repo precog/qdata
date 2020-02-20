@@ -30,6 +30,8 @@ jobs:
           java-version: ${{ env.JDK }}
       - name: Setup Git Actor
         run: git config github.actor slamdata-bot
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v1
       - name: Compile and test
         run: $SBT ++${{ matrix.scala }} ci
       - name: Upload target
