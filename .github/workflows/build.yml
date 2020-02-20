@@ -12,6 +12,7 @@ env:
   GRAAL: '19.3.1.java8'
   REPO_SLUG: ${{ github.repository }}
   ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
@@ -21,8 +22,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.12.10, 2.13.1]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
