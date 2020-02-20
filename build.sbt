@@ -37,7 +37,7 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
   // NB: -Xlint triggers issues that need to be fixed
   scalacOptions --= Seq("-Xlint"),
 
-  logBuffered in Test := isTravisBuild.value,
+  logBuffered in Test := githubIsWorkflowBuild.value,
 
   console := { (console in Test).value }) // console alias test:console
 
@@ -45,7 +45,7 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
 // actually available to run.
 concurrentRestrictions in Global := {
   val maxTasks = 2
-  if (isTravisBuild.value)
+  if (githubIsWorkflowBuild.value)
     // Recreate the default rules with the task limit hard-coded:
     Seq(Tags.limitAll(maxTasks), Tags.limit(Tags.ForkedTestGroup, 1))
   else
@@ -57,7 +57,7 @@ version in ThisBuild := {
   import scala.sys.process._
 
   val currentVersion = (version in ThisBuild).value
-  if (!isTravisBuild.value)
+  if (!githubIsWorkflowBuild.value)
     currentVersion + "-" + "git rev-parse HEAD".!!.substring(0, 7)
   else
     currentVersion
