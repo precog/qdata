@@ -1,4 +1,4 @@
-libraryDependencies += "org.kohsuke" % "github-api" % "1.101" exclude("org.jenkins-ci", "annotation-indexer")
+libraryDependencies += "org.kohsuke" % "github-api" % "1.107" exclude("org.jenkins-ci", "annotation-indexer")
 
 scalacOptions --= Seq(
   "-Ywarn-unused:imports",
