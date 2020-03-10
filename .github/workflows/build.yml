@@ -107,6 +107,9 @@ jobs:
     if: github.event_name == 'pull_request' && contains(github.head_ref, 'version-bump')
     needs: [build]
     runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        scala: [2.12.10]
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
