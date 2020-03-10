@@ -14,6 +14,10 @@ import sbt.TestFrameworks.Specs2
 ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
 ThisBuild / scalaVersion := "2.12.10"
 
+ThisBuild / scmInfo in ThisBuild := Some(ScmInfo(
+  url("https://github.com/slamdata/qdata"),
+  "scm:git@github.com:slamdata/qdata.git"))
+
 val BothScopes = "test->test;compile->compile"
 
 lazy val buildSettings = commonBuildSettings ++ Seq(
