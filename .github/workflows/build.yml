@@ -97,7 +97,7 @@ jobs:
       - name: Run common setup
         run: ./scripts/commonSetup
       - name: Publish Tag
-        run: ./scripts/qdataPublishAndTag
+        run: scripts/publishAndTag 'slamdata/qdata'
 
   auto-merge:
     name: Auto Merge
