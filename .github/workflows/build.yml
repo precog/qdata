@@ -133,7 +133,6 @@ jobs:
         run: ./scripts/commonSetup
       - name: Set env vars
         run: |
-          echo ::set-env name=VERSIONS::$(git diff HEAD^1 | grep -e '^[-+][0-9]' | sed 's/^[+\-]//' | sed 's/\.[0-9]*$//' | uniq | wc -l)
           echo ::set-env name=CLONE_DIR::$(mktemp -d "/tmp/slamdata-bump.XXXXXXXX")
           echo ::set-env name=PR_NUMBER::$(echo "$GITHUB_REF" | cut -d'/' -f3)
           echo ::set-env name=PULL_REQUEST::$(echo "true")
