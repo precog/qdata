@@ -139,5 +139,6 @@ lazy val tectonic = project
   .settings(commonSettings)
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.tectonic)
+  .settings(libraryDependencies += "com.slamdata" %% "tectonic" % managedVersions.value("slamdata-tectonic"))
   .settings(excludeTypelevelScalaLibrary)
   .enablePlugins(AutomateHeaderPlugin)

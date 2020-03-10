@@ -10,7 +10,6 @@ object Dependencies {
   private val spireVersion      = "0.17.0-M1"
   private val specsVersion      = "4.8.1"
   private val jawnVersion       = "1.0.0"
-  private val tectonicVersion   = IO.read(file("./tectonic-version")).trim
 
   def core = Seq(
     "com.slamdata"  %% "slamdata-predef" % predefVersion,
@@ -32,7 +31,6 @@ object Dependencies {
   )
 
   def tectonic = Seq(
-    "com.slamdata"           %% "tectonic"                % tectonicVersion,
     "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.3"
   )
 }

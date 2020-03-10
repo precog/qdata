@@ -3,4 +3,4 @@ resolvers += Resolver.bintrayIvyRepo("slamdata-inc", "sbt-plugins")
 
 addSbtPlugin("com.eed3si9n"  % "sbt-assembly" % "0.14.10")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
-addSbtPlugin("com.slamdata" % "sbt-slamdata" % "6.1.0-79bdcce")
+addSbtPlugin("com.slamdata" % "sbt-slamdata" % "6.2.0")
