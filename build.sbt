@@ -11,17 +11,19 @@ import sbt._, Keys._
 import sbt.std.Transform.DummyTaskMap
 import sbt.TestFrameworks.Specs2
 
+ThisBuild / githubRepository := "qdata"
+
 ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
 ThisBuild / scalaVersion := "2.12.10"
 
 ThisBuild / scmInfo in ThisBuild := Some(ScmInfo(
-  url("https://github.com/slamdata/qdata"),
-  "scm:git@github.com:slamdata/qdata.git"))
+  url("https://github.com/precog/qdata"),
+  "scm:git@github.com:precog/qdata.git"))
 
 val BothScopes = "test->test;compile->compile"
 
 lazy val buildSettings = commonBuildSettings ++ Seq(
-  organization := "com.slamdata",
+  organization := "com.precog",
   scalaOrganization := "org.scala-lang",
   scalacOptions --= Seq(
     "-Yliteral-types",
@@ -101,7 +103,6 @@ lazy val root = project
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
   .aggregate(core, time, json, tectonic)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val core = project
   .in(file("core"))
@@ -111,7 +112,6 @@ lazy val core = project
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.core)
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val time = project
   .in(file("time"))
@@ -120,7 +120,6 @@ lazy val time = project
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.time)
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val json = project
   .in(file("json"))
@@ -130,7 +129,6 @@ lazy val json = project
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.json)
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val tectonic = project
   .in(file("tectonic"))
@@ -139,6 +137,5 @@ lazy val tectonic = project
   .settings(commonSettings)
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.tectonic)
-  .settings(libraryDependencies += "com.slamdata" %% "tectonic" % managedVersions.value("slamdata-tectonic"))
+  .settings(libraryDependencies += "com.precog" %% "tectonic" % managedVersions.value("precog-tectonic"))
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
