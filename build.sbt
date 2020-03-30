@@ -33,12 +33,6 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
     "-Yinduction-heuristics",
     "-Ykind-polymorphism",
     "-Ybackend:GenBCode"),
-  initialize := {
-    val version = sys.props("java.specification.version")
-    assert(
-      Integer.parseInt(version.split("\\.")(1)) >= 8,
-      "Java 8 or above required, found " + version)
-  },
 
   scalacOptions += "-target:jvm-1.8",
 
