@@ -16,7 +16,7 @@ ThisBuild / githubRepository := "qdata"
 ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
 ThisBuild / scalaVersion := "2.12.10"
 
-ThisBuild / githubWorkflowJavaVersions += "graalvm@20.0.0"
+// ThisBuild / githubWorkflowJavaVersions += "graalvm@20.0.0"
 
 ThisBuild / scmInfo in ThisBuild := Some(ScmInfo(
   url("https://github.com/precog/qdata"),
