@@ -16,6 +16,8 @@ ThisBuild / githubRepository := "qdata"
 ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
 ThisBuild / scalaVersion := "2.12.10"
 
+// ThisBuild / githubWorkflowJavaVersions += "graalvm@20.0.0"
+
 ThisBuild / scmInfo in ThisBuild := Some(ScmInfo(
   url("https://github.com/precog/qdata"),
   "scm:git@github.com:precog/qdata.git"))
@@ -31,12 +33,6 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
     "-Yinduction-heuristics",
     "-Ykind-polymorphism",
     "-Ybackend:GenBCode"),
-  initialize := {
-    val version = sys.props("java.specification.version")
-    assert(
-      Integer.parseInt(version.split("\\.")(1)) >= 8,
-      "Java 8 or above required, found " + version)
-  },
 
   scalacOptions += "-target:jvm-1.8",
 
