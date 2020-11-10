@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.10, 2.13.1]
+        scala: [2.12.12, 2.13.1]
         java: [adopt@1.8, graalvm8@20.1.0]
     runs-on: ${{ matrix.os }}
     steps:
@@ -132,7 +132,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.10]
+        scala: [2.12.12]
         java: [adopt@1.8]
     runs-on: ${{ matrix.os }}
     steps:
@@ -183,10 +183,10 @@ jobs:
           path: ~/.sbt
           key: ${{ runner.os }}-sbt-cache-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}-${{ hashFiles('.versions.json') }}
 
-      - name: Download target directory 'target' (2.12.10)
+      - name: Download target directory 'target' (2.12.12)
         uses: actions/download-artifact@v1
         with:
-          name: target-${{ matrix.os }}-2.12.10-${{ matrix.java }}-target
+          name: target-${{ matrix.os }}-2.12.12-${{ matrix.java }}-target
           path: target
 
       - name: Download target directory 'target' (2.13.1)
@@ -195,10 +195,10 @@ jobs:
           name: target-${{ matrix.os }}-2.13.1-${{ matrix.java }}-target
           path: target
 
-      - name: Download target directory 'json/target' (2.12.10)
+      - name: Download target directory 'json/target' (2.12.12)
         uses: actions/download-artifact@v1
         with:
-          name: target-${{ matrix.os }}-2.12.10-${{ matrix.java }}-json_target
+          name: target-${{ matrix.os }}-2.12.12-${{ matrix.java }}-json_target
           path: json/target
 
       - name: Download target directory 'json/target' (2.13.1)
@@ -207,10 +207,10 @@ jobs:
           name: target-${{ matrix.os }}-2.13.1-${{ matrix.java }}-json_target
           path: json/target
 
-      - name: Download target directory 'time/target' (2.12.10)
+      - name: Download target directory 'time/target' (2.12.12)
         uses: actions/download-artifact@v1
         with:
-          name: target-${{ matrix.os }}-2.12.10-${{ matrix.java }}-time_target
+          name: target-${{ matrix.os }}-2.12.12-${{ matrix.java }}-time_target
           path: time/target
 
       - name: Download target directory 'time/target' (2.13.1)
@@ -219,10 +219,10 @@ jobs:
           name: target-${{ matrix.os }}-2.13.1-${{ matrix.java }}-time_target
           path: time/target
 
-      - name: Download target directory 'tectonic/target' (2.12.10)
+      - name: Download target directory 'tectonic/target' (2.12.12)
         uses: actions/download-artifact@v1
         with:
-          name: target-${{ matrix.os }}-2.12.10-${{ matrix.java }}-tectonic_target
+          name: target-${{ matrix.os }}-2.12.12-${{ matrix.java }}-tectonic_target
           path: tectonic/target
 
       - name: Download target directory 'tectonic/target' (2.13.1)
@@ -231,10 +231,10 @@ jobs:
           name: target-${{ matrix.os }}-2.13.1-${{ matrix.java }}-tectonic_target
           path: tectonic/target
 
-      - name: Download target directory 'core/target' (2.12.10)
+      - name: Download target directory 'core/target' (2.12.12)
         uses: actions/download-artifact@v1
         with:
-          name: target-${{ matrix.os }}-2.12.10-${{ matrix.java }}-core_target
+          name: target-${{ matrix.os }}-2.12.12-${{ matrix.java }}-core_target
           path: core/target
 
       - name: Download target directory 'core/target' (2.13.1)
@@ -264,7 +264,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.10]
+        scala: [2.12.12]
         java: [adopt@1.8]
     runs-on: ${{ matrix.os }}
     steps:

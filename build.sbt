@@ -13,8 +13,8 @@ import sbt.TestFrameworks.Specs2
 
 ThisBuild / githubRepository := "qdata"
 
-ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
-ThisBuild / scalaVersion := "2.12.10"
+ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.1")
+ThisBuild / scalaVersion := "2.12.12"
 
 // ThisBuild / githubWorkflowJavaVersions += "graalvm@20.0.0"
 
