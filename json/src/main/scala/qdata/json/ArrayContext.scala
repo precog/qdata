@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import qdata.QDataEncode
 
 import java.lang.CharSequence
 
-import jawn.FContext
+import org.typelevel.jawn.FContext
 
 @SuppressWarnings(Array(
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
-final class ArrayContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+final class ArrayContext[J](implicit qd: QDataEncode[J]) extends FContext.NoIndexFContext[J] {
   private var result: qd.NascentArray = qd.prepArray
 
   def add(s: CharSequence): Unit =

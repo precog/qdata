@@ -1,6 +1,4 @@
-libraryDependencies += "org.kohsuke" % "github-api" % "1.59" exclude("org.jenkins-ci", "annotation-indexer")
-
-disablePlugins(TravisCiPlugin)
+libraryDependencies += "org.kohsuke" % "github-api" % "1.101" exclude("org.jenkins-ci", "annotation-indexer")
 
 scalacOptions --= Seq(
   "-Ywarn-unused:imports",

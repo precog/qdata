@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import qdata.TestData
 import scala.collection.mutable
 import scala.sys.error
 
-import jawn.ast._
+import org.typelevel.jawn.ast._
 import scalaz.std.tuple._
 import scalaz.syntax.functor._
 import spire.math.Real.algebra

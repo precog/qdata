@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,8 @@ import java.time.{
 }
 import scalaz.\/
 import scalaz.Scalaz._
-import slamdata.Predef._
+
+import scala._, Predef._
 
 /**
   * `parse <-> toString` is not an isomorphism, because the first

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import qdata.QDataEncode
 
 import java.lang.CharSequence
 
-import jawn.FContext
+import org.typelevel.jawn.FContext
 import scalaz.{\/, -\/, \/-}
 import scalaz.syntax.either._
 
@@ -32,7 +32,7 @@ import scalaz.syntax.either._
   "org.wartremover.warts.Null",
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
-final class PreciseObjectContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+final class PreciseObjectContext[J](implicit qd: QDataEncode[J]) extends FContext.NoIndexFContext[J] {
 
   private val preciseParser: PreciseParser[J] = PreciseParser[J]
   private var result: qd.NascentObject \/ J = qd.prepObject.left[J]

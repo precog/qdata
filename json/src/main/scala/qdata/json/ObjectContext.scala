@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ import qdata.QDataEncode
 
 import java.lang.CharSequence
 
-import jawn.FContext
+import org.typelevel.jawn.FContext
 
 @SuppressWarnings(Array(
   "org.wartremover.warts.Equals",
   "org.wartremover.warts.Null",
   "org.wartremover.warts.ToString",
   "org.wartremover.warts.Var"))
-final class ObjectContext[J](implicit qd: QDataEncode[J]) extends FContext[J] {
+final class ObjectContext[J](implicit qd: QDataEncode[J]) extends FContext.NoIndexFContext[J] {
   private var result: qd.NascentObject = qd.prepObject
   private var key: String = null
 

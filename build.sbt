@@ -10,12 +10,22 @@ import scala.collection.immutable.Map
 import sbt._, Keys._
 import sbt.std.Transform.DummyTaskMap
 import sbt.TestFrameworks.Specs2
-import sbtrelease._, ReleaseStateTransformations._, Utilities._
+
+ThisBuild / githubRepository := "qdata"
+
+ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.1")
+ThisBuild / scalaVersion := "2.12.12"
+
+// ThisBuild / githubWorkflowJavaVersions += "graalvm@20.0.0"
+
+ThisBuild / scmInfo in ThisBuild := Some(ScmInfo(
+  url("https://github.com/precog/qdata"),
+  "scm:git@github.com:precog/qdata.git"))
 
 val BothScopes = "test->test;compile->compile"
 
 lazy val buildSettings = commonBuildSettings ++ Seq(
-  organization := "com.slamdata",
+  organization := "com.precog",
   scalaOrganization := "org.scala-lang",
   scalacOptions --= Seq(
     "-Yliteral-types",
@@ -23,28 +33,13 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
     "-Yinduction-heuristics",
     "-Ykind-polymorphism",
     "-Ybackend:GenBCode"),
-  initialize := {
-    val version = sys.props("java.specification.version")
-    assert(
-      Integer.parseInt(version.split("\\.")(1)) >= 8,
-      "Java 8 or above required, found " + version)
-  },
 
   scalacOptions += "-target:jvm-1.8",
 
   // NB: -Xlint triggers issues that need to be fixed
   scalacOptions --= Seq("-Xlint"),
-  // NB: Some warts are disabled in specific projects. Here’s why:
-  //   • AsInstanceOf   – wartremover/wartremover#266
-  //   • others         – simply need to be reviewed & fixed
-  wartremoverWarnings in (Compile, compile) --= Seq(
-    Wart.Any,                   // - see wartremover/wartremover#263
-    Wart.PublicInference,       // - creates many compile errors when enabled - needs to be enabled incrementally
-    Wart.ImplicitParameter,     // - creates many compile errors when enabled - needs to be enabled incrementally
-    Wart.ImplicitConversion,    // - see mpilquist/simulacrum#35
-    Wart.Nothing),              // - see wartremover/wartremover#263
 
-  logBuffered in Test := isTravisBuild.value,
+  logBuffered in Test := githubIsWorkflowBuild.value,
 
   console := { (console in Test).value }) // console alias test:console
 
@@ -52,7 +47,7 @@ lazy val buildSettings = commonBuildSettings ++ Seq(
 // actually available to run.
 concurrentRestrictions in Global := {
   val maxTasks = 2
-  if (isTravisBuild.value)
+  if (githubIsWorkflowBuild.value)
     // Recreate the default rules with the task limit hard-coded:
     Seq(Tags.limitAll(maxTasks), Tags.limit(Tags.ForkedTestGroup, 1))
   else
@@ -64,36 +59,11 @@ version in ThisBuild := {
   import scala.sys.process._
 
   val currentVersion = (version in ThisBuild).value
-  if (!isTravisBuild.value)
+  if (!githubIsWorkflowBuild.value)
     currentVersion + "-" + "git rev-parse HEAD".!!.substring(0, 7)
   else
     currentVersion
 }
-
-useGpg in Global := {
-  val oldValue = (useGpg in Global).value
-  !isTravisBuild.value || oldValue
-}
-
-pgpSecretRing in Global := pgpPublicRing.value   // workaround for sbt/sbt-pgp#126
-
-lazy val publishSettings = commonPublishSettings ++ Seq(
-  performMavenCentralSync := false,   // basically just ignores all the sonatype sync parts of things
-  publishAsOSSProject := true,
-  organizationName := "SlamData Inc.",
-  organizationHomepage := Some(url("http://slamdata.com")),
-  homepage := Some(url("https://github.com/slamdata/qdata")),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/slamdata/qdata"),
-      "scm:git@github.com:slamdata/qdata.git")),
-  bintrayCredentialsFile := {
-    val oldValue = bintrayCredentialsFile.value
-    if (!isTravisBuild.value)
-      Path.userHome / ".bintray" / ".credentials"
-    else
-      oldValue
-  })
 
 lazy val assemblySettings = Seq(
   test in assembly := {},
@@ -112,7 +82,7 @@ lazy val assemblySettings = Seq(
 )
 
 // Build and publish a project, excluding its tests.
-lazy val commonSettings = buildSettings ++ publishSettings ++ assemblySettings
+lazy val commonSettings = buildSettings ++ assemblySettings
 
 // not doing this causes NoSuchMethodErrors when using coursier
 lazy val excludeTypelevelScalaLibrary =
@@ -129,7 +99,6 @@ lazy val root = project
   .settings(aggregate in assembly := false)
   .settings(excludeTypelevelScalaLibrary)
   .aggregate(core, time, json, tectonic)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val core = project
   .in(file("core"))
@@ -139,7 +108,6 @@ lazy val core = project
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.core)
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val time = project
   .in(file("time"))
@@ -148,7 +116,6 @@ lazy val time = project
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.time)
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val json = project
   .in(file("json"))
@@ -158,7 +125,6 @@ lazy val json = project
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.json)
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)
 
 lazy val tectonic = project
   .in(file("tectonic"))
@@ -167,5 +133,5 @@ lazy val tectonic = project
   .settings(commonSettings)
   .settings(publishTestsSettings)
   .settings(libraryDependencies ++= Dependencies.tectonic)
+  .settings(libraryDependencies += "com.precog" %% "tectonic" % managedVersions.value("precog-tectonic"))
   .settings(excludeTypelevelScalaLibrary)
-  .enablePlugins(AutomateHeaderPlugin)

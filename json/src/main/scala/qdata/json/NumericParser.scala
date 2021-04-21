@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import qdata.QDataEncode
 
 import java.lang.NumberFormatException
 
+import org.typelevel.jawn.util.parseLong
 import spire.math.Real
 
 final class NumericParser[A] private (implicit A: QDataEncode[A]) {
@@ -39,7 +40,7 @@ final class NumericParser[A] private (implicit A: QDataEncode[A]) {
       }
     } else { // there is not a decimal point
       try {
-        A.makeLong(jawn.util.parseLong(s))
+        A.makeLong(parseLong(s))
       } catch {
         case _: NumberFormatException =>
           A.makeReal(Real(s)) // throws NumberFormatException

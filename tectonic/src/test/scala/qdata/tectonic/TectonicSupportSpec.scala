@@ -1,5 +1,5 @@
 /*
- * Copyright 2014–2018 SlamData Inc.
+ * Copyright 2020 Precog Data
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.specs2.mutable.SpecLike
 
 import scalaz.std.either._
 import scalaz.std.list._
-import scalaz.std.stream._
 import scalaz.syntax.foldable._
 
 object TectonicSupportSpec extends SpecLike with ScalaCheck {
@@ -44,7 +43,7 @@ object TectonicSupportSpec extends SpecLike with ScalaCheck {
         _Array(xs map normalize)
 
       case _Object(xs) =>
-        _Object(xs mapValues normalize)
+        _Object(xs map { case (k, v) => (k, normalize(v)) })
 
       case _Meta(_Meta(v, mi), mo) =>
         normalize(_Meta(v, _Meta(mi, mo)))
@@ -75,7 +74,7 @@ object TectonicSupportSpec extends SpecLike with ScalaCheck {
     val results =
       normalized
         .grouped(batchSize)
-        .toStream
+        .toList
         .foldMapM(driver.consume(_))
 
     val actual = for {
